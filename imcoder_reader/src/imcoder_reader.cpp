@@ -1,4 +1,5 @@
 #include "imcoder_reader.h"
+#include <ros/console.h>
 
 namespace imcoder_reader
 {
@@ -24,6 +25,7 @@ void IMCoder::init(ros::NodeHandle& nh){
     mag_pub_ = nh.advertise<sensor_msgs::MagneticField>(mag_topic_name_.c_str(), 1);
 
     // Load the RTIMULib.ini config file
+    ROS_DEBUG("Loading IMU Settingsy");    
     RTIMUSettings *settings_ = new RTIMUSettings(calibration_file_path_.c_str(), 
                                                  calibration_file_name_.c_str()); 
 
@@ -32,16 +34,19 @@ void IMCoder::init(ros::NodeHandle& nh){
     if ((imu_ == NULL) || (imu_->IMUType() == RTIMU_TYPE_NULL))
     {
         ROS_ERROR("IMU not found");
-        ros::shutdown();
+        //ros::shutdown();
     }
 
     // Initialize the imu object
+    ROS_DEBUG("Initializing IMU object");
     imu_->IMUInit();
 
     // Set the Fusion coefficient
+    ROS_DEBUG("Setting the fusion coefficient");
     imu_->setSlerpPower(0.02);
     
     // Enable the sensors
+    ROS_DEBUG("Enabling sensors");
     imu_->setGyroEnable(true);
     imu_->setAccelEnable(true);
     imu_->setCompassEnable(true);
@@ -49,6 +54,17 @@ void IMCoder::init(ros::NodeHandle& nh){
 
 bool IMCoder::getROSParams(const ros::NodeHandle& private_nh)
 {
+    bool debug_mode;
+    if(private_nh.getParam("debug_mode", debug_mode))
+    {
+
+        if(ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug))
+        {
+            ros::console::notifyLoggerLevelsChanged();
+        }
+        ROS_DEBUG("ROS console set on DEBUG mode");
+    }
+
     if(!private_nh.getParam("imu_topic_name", imu_topic_name_))
     {
         ROS_WARN("No imu_topic_name provided - default: imu/data");
@@ -73,7 +89,7 @@ bool IMCoder::getROSParams(const ros::NodeHandle& private_nh)
     if(!private_nh.getParam("calibration_file_name", calibration_file_name_))
     {
         ROS_WARN("No calibration_file_name provided - default: RTIMULib.ini");
-        calibration_file_name_ = "RTIMULib";
+        calibration_file_name_ = "RTIMULib.ini";
     }
     ROS_DEBUG("calibration_file_name: %s", calibration_file_name_.c_str());
 
