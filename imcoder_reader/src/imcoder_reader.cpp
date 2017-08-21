@@ -161,7 +161,6 @@ void IMCoder::spin()
     while (ros::ok())
     {
         update();
-        pubData();
         update_rate_.sleep();
     }
 }
