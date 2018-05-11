@@ -1,10 +1,14 @@
 # IMcoders
 
 ## Dependencies
-### ROS
-`sudo apt install ros-kinetic-full-desktop`
+### ROS Kinetic
+**full desktop version recomended**
+http://wiki.ros.org/kinetic/Installation/Ubuntu
 
 ### Gazebo (just for simulation)
+Install last release from here:
+http://wiki.ros.org/simulator_gazebo/Tutorials/StartingGazebo#Installation
+and also:
 `sudo apt-get install ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-msgs ros-kinetic-gazebo-plugins ros-kinetic-gazebo-ros-control`
 
 ## How-to
@@ -25,6 +29,9 @@ or
 
 `catkin_make`
 
+1. Source the workspace
+`source ~/imcoders_ws/devel/setup.bash`
+
 1. Launch simulation
 `roslaunch imcoders_control keyboard_teleop.launch`
 
@@ -39,4 +46,4 @@ or
 If you are missing dependencies for the in this repo, from the workspace try:
 `rosdep install <package_name>`
 e.g.,
-`rosdep install <imcoders_control>`
+`rosdep install imcoders_control
