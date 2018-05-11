@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<robot name="box_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- Properties -->
+    <!--All units in m-kg-s-radians unit system -->
+    <xacro:property name="M_PI" value="3.1415926535897931"/>
+
+    <!-- Colors -->
+    <material name="Black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+    </material>
+    <material name="Red">
+        <color rgba="0.8 0.0 0.0 1.0"/>
+    </material>
+    <material name="White">
+        <color rgba="1.0 1.0 1.0 1.0"/>
+    </material>
+    <material name="Blue">
+        <color rgba="0.0 0.0 0.8 1.0"/>
+    </material>
+
+    <!-- Box shape -->
+    <xacro:property name="box_x"     value="0.2"/>
+    <xacro:property name="box_y"     value="0.2"/>
+    <xacro:property name="box_z"     value="0.2"/>
+    <xacro:property name="box_color" value="Red"/>
+
+
+    <!-- IMcoder -->
+    <!-- Shape -->
+    <xacro:property name="imcoder_height" value="0.00545"/>
+    <xacro:property name="imcoder_radius" value="0.02"/>
+    <xacro:property name="imcoder_color"  value="White"/>
+
+    <!-- Pose (related to center of the box) -->
+    <xacro:property name="imcoder_x"     value="0.0"/>
+    <xacro:property name="imcoder_y"     value="0.0"/>
+    <xacro:property name="imcoder_z"     value="0.0"/>
+    <xacro:property name="imcoder_roll"  value="0.0"/>
+    <xacro:property name="imcoder_pitch" value="0.0"/>
+    <xacro:property name="imcoder_yaw"   value="0.0"/>
+
+    <!-- Data parameters -->
+    <xacro:property name="gaussian_noise"     value="0.0"  />
+    <!-- Update rates from plugin sensor. -->
+    <!-- Note that must be always [sensor_update_rate >= plugin_update_rate] -->
+    <xacro:property name="sensor_update_rate" value="100.0"/>
+    <xacro:property name="plugin_update_rate" value="10.0"/>
+
+    <!-- Robot description -->
+    <!-- Root link -->
+    <link name="box_footprint">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.0001 0.0001 0.0001"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint from box_footprint to box_link -->
+    <joint name="box_link_joint" type="fixed">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <parent link="box_footprint"/>
+        <child link="box_link"/>
+    </joint>
+
+    <!-- Box model link -->
+    <link name="box_link">
+        <inertial>
+            <mass value="1.0"/>
+            <origin xyz="0 0 0"/>
+            <inertia ixx="0.0" ixy="0.0"  ixz="0.0"
+                               iyy="0.0"  iyz="0.0"
+                                          izz="0.0"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0"/>
+            <geometry>
+                <box size="${box_x} ${box_y} ${box_z}"/>
+            </geometry>
+            <material name="${box_color}"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0"/>
+            <geometry>
+                <box size="${box_x} ${box_y} ${box_z}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <!-- Box controller Gazebo plugin -->
+    <gazebo>
+        <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
+            <commandTopic>imcoders_keyboard_teleop/cmd_vel</commandTopic>
+            <odometryTopic>odom</odometryTopic>
+            <odometryFrame>odom</odometryFrame>
+            <odometryRate>20.0</odometryRate>
+            <robotBaseFrame>box_footprint</robotBaseFrame>
+        </plugin>
+    </gazebo>
+
+    <!-- Joint from box_link to imcoder_link -->
+    <joint name="imcoder_joint" type="fixed">
+        <origin xyz="${imcoder_x} ${imcoder_y} ${imcoder_z}" rpy="${imcoder_roll} ${imcoder_pitch} ${imcoder_yaw}"/>
+        <parent link="box_link"/>
+        <child link="imcoder_link"/>
+    </joint>
+
+    <!-- IMcoder link -->
+    <link name="imcoder_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
+            <geometry>
+                <cylinder length="${imcoder_height}" radius="${imcoder_radius}"/>
+            </geometry>
+            <material name="${imcoder_color}"/>
+        </visual>
+    </link>
+
+    <!-- IMcoder controller Gazebo plugin -->
+    <gazebo reference="imcoder_link">
+        <gravity>true</gravity>
+        <sensor name="imcoder_left_sensor" type="imcoder">
+            <always_on>true</always_on>
+            <update_rate>${sensor_update_rate}</update_rate>
+            <visualize>true</visualize>
+            <topic>__default_topic__</topic>
+            <plugin filename="libgazebo_ros_imcoder_sensor.so" name="imcoder_plugin">
+                <topicName>imcoder_data</topicName>
+                <bodyName>imcoder_link</bodyName>
+                <updateRateHZ>${plugin_update_rate}</updateRateHZ>
+                <gaussianNoise>${gaussian_noise}</gaussianNoise>
+                <xyzOffset>0 0 0</xyzOffset>
+                <rpyOffset>0 0 0</rpyOffset>
+                <frameName>imcoder_link</frameName>
+            </plugin>
+            <pose>0 0 0 0 0 0</pose>
+        </sensor>
+    </gazebo>
+
+</robot>

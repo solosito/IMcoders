@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>imcoders_description</name>
+  <version>0.1.0</version>
+  <description>The imcoders_description package</description>
+  <license>TODO</license>
+  <maintainer email="alfonso.troya@gmail.com">Alfonso Troya</maintainer>
+  <author email="alfonso.troya@gmail.com">Alfonso Troya</author>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>gazebo_plugins</build_depend>
+  <build_depend>gazebo_ros</build_depend>
+  <build_export_depend>gazebo_plugins</build_export_depend>
+  <build_export_depend>gazebo_ros</build_export_depend>
+  <exec_depend>gazebo_plugins</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+</package>

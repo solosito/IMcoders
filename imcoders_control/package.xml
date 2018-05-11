@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>imcoders_control</name>
+  <version>0.1.0</version>
+  <description>The imcoders_control package</description>
+  <license>TODO</license>
+  <maintainer email="alfonso.troya@gmail.com">Alfonso Troya</maintainer>
+  <author email="alfonso.troya@gmail.com">Alfonso Troya</author>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>turtlebot_teleop</build_depend>
+  <build_export_depend>turtlebot_teleop</build_export_depend>
+  <exec_depend>turtlebot_teleop</exec_depend>
+</package>
