@@ -20,14 +20,11 @@ and also:
 
 1. Build the code  
 Go to the workspace folder  
-`cd ~/imcoders_ws`
-
+`cd ~/imcoders_ws`  
 then  
-`catkin build`
-
+`catkin build`  
 or  
-`catkin_make`
-
+`catkin_make`  
 1. Source the workspace  
 `source ~/imcoders_ws/devel/setup.bash`
 
