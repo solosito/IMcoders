@@ -43,7 +43,7 @@ or
 
 ## Troubleshooting
 ### Missing dependencies
-If you are missing dependencies for the in this repo, from the workspace try:
+If you are missing dependencies for any package in this repo, from the workspace try:
 `rosdep install <package_name>`
 e.g.,
-`rosdep install imcoders_control
+`rosdep install imcoders_control`
