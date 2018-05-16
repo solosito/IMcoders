@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <node name="imu_filter_node_left" pkg="imu_filter_madgwick" type="imu_filter_node" output="screen">
+  	<param name="use_mag"      value="false"/>
+  	<param name="gain_acc"     value="0.01"/>
+  	<remap from="imu/data_raw" to="imu_left"/>
+  	<remap from="/imu/data"    to="imu_left_filtered"/>
+  </node>
+
+  <node name="imu_filter_node_right" pkg="imu_filter_madgwick" type="imu_filter_node" output="screen">
+  	<param name="use_mag"      value="false"/>
+  	<param name="gain_acc"     value="0.01"/>
+  	<remap from="imu/data_raw" to="imu_right"/>
+  	<remap from="/imu/data"    to="imu_right_filtered"/>
+  </node>
+</launch>
