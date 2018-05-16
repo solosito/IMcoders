@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <node name="imu_filter_madgwick" pkg="imu_filter_madgwick" type="imu_filter_node" output="screen">
+  	<param name="use_mag"      value="false"/>
+  	<param name="gain_acc"     value="0.01"/>
+  	<remap from="imu/data_raw" to="imcoder_data"/>
+  	<remap from="/imu/data"    to="imcoder_data_filtered"/>
+  </node>
+</launch>
