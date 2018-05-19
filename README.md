@@ -33,7 +33,7 @@ or
 1. Launch the simulation  
 `roslaunch imcoders_control keyboard_teleop.launch`
 
-1. Launch teleop  
+1. Launch teleop from a new terminal (node you need to source the workspace as before)  
 `roslaunch imcoders_gazebo box_robot_gazebo.launch`
 
 1. Launch Rviz (optional)  
