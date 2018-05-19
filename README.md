@@ -23,9 +23,10 @@ and install the ros packages _ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-msg
 Go to the workspace folder  
 `cd ~/imcoders_ws`  
 then  
-`catkin build`  
-or  
 `catkin_make`  
+or  
+`catkin build`  
+
 1. Source the workspace  
 `source ~/imcoders_ws/devel/setup.bash`
 
@@ -39,8 +40,10 @@ or
 `rviz`
 
 ## Troubleshooting
-### Missing dependencies
-If you are missing dependencies for any package in this repo, from the workspace try:  
+### Missing dependencies while building
+If you are missing dependencies for any package in this repo, source the workspace and install the missing dependencies for the packages not building:
+`source ~/imcoders_ws/devel/setup.bash`
 `rosdep install <package_name>`  
+
 for instance:  
 `rosdep install imcoders_control`  
