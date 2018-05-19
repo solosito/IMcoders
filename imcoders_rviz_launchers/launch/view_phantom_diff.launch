@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+
+	<!-- Launch visualization in rviz -->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find imcoders_rviz_launchers)/rviz/phantom_diff.rviz" required="true" />
+
+</launch>
