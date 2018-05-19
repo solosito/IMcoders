@@ -6,11 +6,8 @@ Link to official site:
 http://wiki.ros.org/kinetic/Installation/Ubuntu  
 **NOTE:** The recomended version is _Desktop-Full Install_
 
-### Gazebo (just for simulation)
-Link to official site:  
-http://wiki.ros.org/simulator_gazebo/Tutorials/StartingGazebo#Installation  
-and install the ros packages _ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-msgs ros-kinetic-gazebo-plugins ros-kinetic-gazebo-ros-control_:  
-`sudo apt-get install ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-msgs ros-kinetic-gazebo-plugins ros-kinetic-gazebo-ros-control`
+### ROS IMU tools package
+`sudo apt install ros-kinetic-imu-tools`  
 
 ## How-to
 1. Create a new ROS workspace or use your an existing one  
@@ -28,16 +25,19 @@ or
 `catkin build`  
 
 1. Source the workspace  
-`source ~/imcoders_ws/devel/setup.bash`
+`source ~/imcoders_ws/devel/setup.bash`  
+(Optional) Source the workspace in your .bashrc so you don't have to source the workspace every time you open a new terminal  
+`echo "source ~/imcoders_ws/devel/setup.bash" >> ~/.bashrc`
 
-1. Launch the simulation  
+1. Launch simulation  
+`roslaunch imcoders_gazebo box_robot_gazebo.launch`  
+
+1. Launch teleop from a new terminal (node you need to source the workspace as before if you did not modified your .bashrc)  
 `roslaunch imcoders_control keyboard_teleop.launch`
 
-1. Launch teleop from a new terminal (node you need to source the workspace as before)  
-`roslaunch imcoders_gazebo box_robot_gazebo.launch`
-
-1. Launch Rviz (optional)  
-`rviz`
+1. (Optional) Launch Rviz for visualization  
+`roslaunch imcoders_rviz_launchers view_diff.launch`  
+`roslaunch imcoders_rviz_launchers view_box.launch`  
 
 ## Troubleshooting
 ### Missing dependencies while building
@@ -45,5 +45,5 @@ If you are missing dependencies for any package in this repo, source the workspa
 `source ~/imcoders_ws/devel/setup.bash`
 `rosdep install <package_name>`  
 
-for instance:  
+Example:  
 `rosdep install imcoders_control`  
