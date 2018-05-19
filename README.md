@@ -2,13 +2,14 @@
 
 ## Dependencies
 ### ROS Kinetic
-**full desktop version recomended**
-http://wiki.ros.org/kinetic/Installation/Ubuntu
+Link to official site:  
+http://wiki.ros.org/kinetic/Installation/Ubuntu  
+**NOTE:** The recomended version is _Desktop-Full Install_
 
 ### Gazebo (just for simulation)
-Install last release from here:  
+Link to official site:  
 http://wiki.ros.org/simulator_gazebo/Tutorials/StartingGazebo#Installation  
-and also:  
+and install the ros packages _ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-msgs ros-kinetic-gazebo-plugins ros-kinetic-gazebo-ros-control_:  
 `sudo apt-get install ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-msgs ros-kinetic-gazebo-plugins ros-kinetic-gazebo-ros-control`
 
 ## How-to
