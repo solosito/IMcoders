@@ -26,7 +26,7 @@ sudo ldconfig
 1. Clone this repo  
 `git clone https://github.com/solosito/IMcoders.git ~/imcoders_ws/src/.`  
 
-    If you installed [RTIMULib2](RTIMULib2), remove the `CATKIN_IGNORE` file from `imcoder_reader` in order to also compile that package  
+    If you installed [RTIMULib2](https://github.com/solosito/IMcoders#optional-rtimulib2), remove the `CATKIN_IGNORE` file from `imcoder_reader` in order to also compile that package  
     `rm ~/imcoders_ws/src/imcoder_reader/CATKIN_IGNORE`
 
 1. Build the code  
