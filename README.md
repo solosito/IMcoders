@@ -9,6 +9,16 @@ http://wiki.ros.org/kinetic/Installation/Ubuntu
 ### ROS IMU tools package
 `sudo apt install ros-kinetic-imu-tools`  
 
+### (Optional) RTIMULib2
+Install this package if you want to use the `imcoder_reader` 
+```
+git clone -b NoQt https://github.com/Pablo-Leyva/RTIMULib2 ~/imcoders_ws/third-party/RTIMULib2
+mkdir -p ~/imcoders_ws/third-party/RTIMULib2/RTHost/build && cd "$_"
+cmake ..
+sudo make install
+sudo ldconfig
+```
+
 ## How-to
 1. Create a new ROS workspace or use your an existing one  
 `mkdir -p ~/imcoders_ws/src`
