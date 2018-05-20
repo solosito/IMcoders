@@ -1,16 +1,33 @@
 <?xml version="1.0"?>
 <launch>
     <node pkg="RTIMUHOST" type="RTHostIMUNoQt" name="imcoder01_node" output="screen">
-        <param name="path_to_settings_file" value="$(find imcoder_reader)/config/"/>
-        <param name="imcoder_name" value="imcoder01"/>
-        <param name="serial_port" value="/dev/rfcomm1"/>
-        <param name="frame_id" value="imcoders_link"/>
+        <param name="path_to_settings_file" value="$(find imcoder_reader)/config/RTHostIMU_01.ini"/>
+        <param name="imcoder_name"          value="imcoder01"/>
+        <param name="serial_port"           value="/dev/rfcomm1"/>
+        <param name="frame_id"              value="imcoder01_link"/>
+    </node>
+
+    <node pkg="RTIMUHOST" type="RTHostIMUNoQt" name="imcoder02_node" output="screen">
+        <param name="path_to_settings_file" value="$(find imcoder_reader)/config/RTHostIMU_02.ini"/>
+        <param name="imcoder_name"          value="imcoder02"/>
+        <param name="serial_port"           value="/dev/rfcomm2"/>
+        <param name="frame_id"              value="imcoder02_link"/>
+    </node>
+
+    <node pkg="RTIMUHOST" type="RTHostIMUNoQt" name="imcoder03_node" output="screen">
+        <param name="path_to_settings_file" value="$(find imcoder_reader)/config/RTHostIMU_03.ini"/>
+        <param name="imcoder_name"          value="imcoder03"/>
+        <param name="serial_port"           value="/dev/rfcomm3"/>
+        <param name="frame_id"              value="imcoder03_link"/>
     </node>
 
     <!-- <node pkg="RTIMUHOST" type="RTHostIMUNoQt" name="imcoder02_node" output="screen">
-        <param name="path_to_settings_file" value="$(find imcoder_reader)/config/"/>
-        <param name="imcoder_name" value="imcoder01"/>
-        <param name="serial_port" value="/dev/rfcomm1"/>
-        <param name="frame_id" value="imcoders"/>
+        <param name="path_to_settings_file" value="$(find imcoder_reader)/config/RTHostIMU_02.ini"/>
+        <param name="imcoder_name"          value="imcoder02"/>
+        <param name="serial_port"           value="/dev/rfcomm2"/>
+        <param name="frame_id"              value="imcoders_link"/>
     </node> -->
+
+    <node pkg="tf2_ros" type="static_transform_publisher" name="imcoder01to02" args="1 0 0 0 0 0 imcoder01_link imcoder02_link" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="imcoder01to03" args="1 0 0 0 0 0 imcoder02_link imcoder03_link" />
 </launch>
