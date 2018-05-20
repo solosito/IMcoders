@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
     <node pkg="imcoder_reader" name="imcoder_reader" type="imcoder_reader_node" output="screen">
         <param name="debug_mode"                       	value="true"/>
