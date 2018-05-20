@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="RTIMUHOST" type="RTHostIMUNoQt" name="imcoder01_node" output="screen">
+        <param name="path_to_settings_file" value="$(find imcoder_reader)/config/"/>
+        <param name="imcoder_name" value="imcoder01"/>
+        <param name="serial_port" value="/dev/rfcomm1"/>
+        <param name="frame_id" value="imcoders_link"/>
+    </node>
+
+    <!-- <node pkg="RTIMUHOST" type="RTHostIMUNoQt" name="imcoder02_node" output="screen">
+        <param name="path_to_settings_file" value="$(find imcoder_reader)/config/"/>
+        <param name="imcoder_name" value="imcoder01"/>
+        <param name="serial_port" value="/dev/rfcomm1"/>
+        <param name="frame_id" value="imcoders"/>
+    </node> -->
+</launch>
