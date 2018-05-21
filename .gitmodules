@@ -1,0 +1,3 @@
+[submodule "timed_roslaunch"]
+	path = timed_roslaunch
+	url = https://github.com/solosito/timed_roslaunch
