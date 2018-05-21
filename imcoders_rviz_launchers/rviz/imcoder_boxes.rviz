@@ -5,7 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /TF1/Frames1
+        - /TF1
         - /Imu1
         - /Imu2
         - /Imu3
@@ -57,13 +57,31 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
+        imcoder01_link:
+          Value: true
+        imcoder02_link:
+          Value: true
+        imcoder03_link:
+          Value: true
+        imcoder07_link:
+          Value: true
+        imcoders_link:
+          Value: false
       Marker Scale: 1
       Name: TF
       Show Arrows: false
       Show Axes: false
       Show Names: true
       Tree:
-        {}
+        imcoders_link:
+          imcoder01_link:
+            {}
+          imcoder02_link:
+            {}
+          imcoder03_link:
+            {}
+          imcoder07_link:
+            {}
       Update Interval: 0
       Value: true
     - Acceleration properties:
