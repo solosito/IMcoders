@@ -1,4 +1,5 @@
 # IMcoders
+The IMcoders project is meant to offer to the robotic community an easy to mount, cheap and reliable device capable of substitute the wheel encoders in an already existing system, or to produce accurate odometry data for a wheeled device/robot without previous odometry support.  
 
 ## Dependencies
 ### ROS Kinetic
