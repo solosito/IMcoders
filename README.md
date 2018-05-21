@@ -10,7 +10,7 @@ http://wiki.ros.org/kinetic/Installation/Ubuntu
 `sudo apt install ros-kinetic-imu-tools`  
 
 ### (Optional) RTIMULib2
-Install this package if you want to use the `imcoder_reader` 
+Install this package if you want to use the `imcoder_reader` for using the hardware 
 ```
 git clone -b NoQt https://github.com/Pablo-Leyva/RTIMULib2 ~/imcoders_ws/third-party/RTIMULib2
 mkdir -p ~/imcoders_ws/third-party/RTIMULib2/RTHost/build && cd "$_"
@@ -41,20 +41,45 @@ or (in case you have the [catkin_tools](http://catkin-tools.readthedocs.io/en/la
 `source ~/imcoders_ws/devel/setup.bash`  
 
     (Optional) Source the workspace in your .bashrc so you don't have to source the workspace every time you open a new terminal  
-    `echo "source ~/imcoders_ws/devel/setup.bash" >> ~/.bashrc`
+    `echo "source ~/imcoders_ws/devel/setup.bash" >> ~/.bashrc`  
 
-1. Launch simulation  
+## Running simulation
+#### Box
+1. Launch simulator  
 `roslaunch imcoders_gazebo box_robot_gazebo.launch`  
 
 1. Launch teleop from a new terminal (node you need to source the workspace as before if you did not modified your .bashrc)  
-`roslaunch imcoders_control keyboard_teleop.launch`
+`roslaunch imcoders_control keyboard_teleop.launch`  
 
 1. Launch Rviz for visualization  
-    * Box robot with imcoders  
-    `roslaunch imcoders_rviz_launchers view_box.launch`  
-    
-    * Differential wheeled robot with imcoders  
-    `roslaunch imcoders_rviz_launchers view_diff.launch`   
+* Box robot with imcoders  
+`roslaunch imcoders_rviz_launchers view_box.launch`  
+
+![](https://github.com/solosito/IMcoders/blob/devel/doc/images/box_robot_gazebo.png)
+
+#### Differential wheeled robot with IMcoders  
+1. Launch simulator  
+`roslaunch imcoders_gazebo diff_wheeled_gazebo_IMcoders.launch`  
+
+1. Launch teleop from a new terminal (node you need to source the workspace as before if you did not modified your .bashrc)  
+`roslaunch imcoders_control keyboard_teleop.launch`  
+
+1. Launch Rviz for visualization  
+`roslaunch imcoders_rviz_launchers view_diff.launch`  
+
+![](https://github.com/solosito/IMcoders/blob/devel/doc/images/diff_robot_gazebo.png)
+
+## Running with hardware
+1. Source the third party packages  
+`source ~/imcoders_ws/third-party/RTIMULib2/RTHost/build/devel/setup.bash`  
+
+1. Launch node for sensors  
+`roslaunch imcoder_reader imcoders_all_timed.launch`  
+
+1. Launch visualization  
+`roslaunch imcoders_rviz_launchers view_imcoders_boxes.launch`  
+
+![](https://github.com/solosito/IMcoders/blob/devel/doc/images/imcoders_rviz.png)
 
 ## Troubleshooting
 ### Missing dependencies while building
