@@ -17,5 +17,6 @@
   <run_depend>roscpp</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>angles</run_depend>
+  <run_depend>timed_roslaunch</run_depend>
 
 </package>
