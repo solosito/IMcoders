@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="imcoder07_enable" default="true"/>
+    <arg name="parent_link"      default="imcoders_link"/>
+
+    <!-- IMcoder07 node -->
+    <node pkg="RTIMUHOST" type="RTHostIMUNoQt" name="imcoder07_node" output="screen" if="$(arg imcoder07_enable)">
+        <param name="path_to_settings_file" value="$(find imcoder_reader)/config/RTHostIMU_07.ini"/>
+        <param name="imcoder_name"          value="imcoder07"/>
+        <param name="serial_port"           value="/dev/rfcomm7"/>
+        <param name="frame_id"              value="imcoder07_link"/>
+    </node>
+
+    <!-- IMcoder07 TF -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="tf_$(arg parent_link)_to_imcoder07" args="1 1 0 0 0 0 $(arg parent_link) imcoder07_link" />
+</launch>
