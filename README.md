@@ -44,7 +44,7 @@ or (in case you have the [catkin_tools](http://catkin-tools.readthedocs.io/en/la
     `echo "source ~/imcoders_ws/devel/setup.bash" >> ~/.bashrc`  
 
 ## Running simulation
-#### Box
+### Box
 1. Launch simulator  
 `roslaunch imcoders_gazebo box_robot_gazebo.launch`  
 
@@ -52,12 +52,11 @@ or (in case you have the [catkin_tools](http://catkin-tools.readthedocs.io/en/la
 `roslaunch imcoders_control keyboard_teleop.launch`  
 
 1. Launch Rviz for visualization  
-* Box robot with imcoders  
 `roslaunch imcoders_rviz_launchers view_box.launch`  
 
 ![](https://github.com/solosito/IMcoders/blob/devel/doc/images/box_robot_gazebo.png)
 
-#### Differential wheeled robot with IMcoders  
+### Differential wheeled robot with IMcoders  
 1. Launch simulator  
 `roslaunch imcoders_gazebo diff_wheeled_gazebo_IMcoders.launch`  
 
