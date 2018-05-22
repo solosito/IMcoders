@@ -33,7 +33,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## The catkin_package macro generates cmake config files for the package
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES imcoder_reader	
+  LIBRARIES imcoder_reader
   CATKIN_DEPENDS roscpp sensor_msgs
 )
 
