@@ -8,6 +8,8 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Imu.h>
 
+typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Imu, sensor_msgs::Imu> ImcodersSyncPolicy;
+
 namespace imcoders_diff_odom
 {
 
@@ -39,7 +41,7 @@ class imcodersDiffOdom
     ///
     /// @brief      { function_description }
     ///
-    void publishOdom(nav_msgs::Odometry odom_msg);
+    void publishOdom(nav_msgs::Odometry& odom_msg);
 
     ///
     /// @brief      Subscribes to the left and right imcoders sensors in order to compute an odometry
@@ -47,7 +49,8 @@ class imcodersDiffOdom
     /// @param[in]  imcoder_left   The left imcoder sensor
     /// @param[in]  imcoder_right  The right imcoder sensor
     ///
-    void imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_left, const sensor_msgs::ImuConstPtr& imcoder_right);
+    void imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_left,
+                          const sensor_msgs::ImuConstPtr& imcoder_right);
 
     ///
     /// @brief      Runs the node
@@ -55,6 +58,7 @@ class imcodersDiffOdom
     void run();
 
   private:
+
     ros::NodeHandle& nh_;  // NodeHandle for class, defined outside
 
     std::string odom_topic_name_;
@@ -66,6 +70,11 @@ class imcodersDiffOdom
     nav_msgs::Odometry odom_msg_;
 
     ros::Publisher odom_pub_;
+
+    message_filters::Subscriber<sensor_msgs::Imu> *imcoder_left_sub_;
+    message_filters::Subscriber<sensor_msgs::Imu> *imcoder_right_sub_;
+
+    message_filters::Synchronizer<ImcodersSyncPolicy>* imcoders_sync_;
 
 };
 }  // namespace imcoder_reader

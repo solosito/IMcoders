@@ -3,8 +3,8 @@
 
     <node pkg="imcoders_diff_odom" type="imcoders_diff_odom_node" name="imcoders_diff_odom" output="screen">
         <param name="odom_topic_name"          value="imcoders/odom"/>
-        <param name="imcoder_left_topic_name"  value="imcoder01/data"/>
-        <param name="imcoder_right_topic_name" value="imcoder02/data"/>
+        <param name="imcoder_left_topic_name"  value="imcoder01/imu"/>
+        <param name="imcoder_right_topic_name" value="imcoder03/imu"/>
     </node>
 
 </launch>

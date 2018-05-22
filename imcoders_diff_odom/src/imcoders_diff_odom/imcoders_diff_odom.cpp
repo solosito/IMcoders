@@ -4,8 +4,14 @@
 namespace imcoders_diff_odom
 {
 
+typedef message_filters::Subscriber<sensor_msgs::Imu> imcoder_left_sub_type;
+typedef message_filters::Subscriber<sensor_msgs::Imu> imcoder_right_sub_type;
+
 imcodersDiffOdom::imcodersDiffOdom(ros::NodeHandle& nh, const ros::NodeHandle& private_nh)
-    : nh_(nh)
+    : nh_(nh),
+      imcoder_left_sub_(NULL),
+      imcoder_right_sub_(NULL),
+      imcoders_sync_(NULL)
 {
     if(getParams(private_nh))
     {
@@ -25,14 +31,13 @@ bool imcodersDiffOdom::init(ros::NodeHandle& nh)
     ROS_INFO_STREAM(imcoder_left_topic_name_);
     ROS_INFO_STREAM(imcoder_right_topic_name_);
 
-    message_filters::Subscriber<sensor_msgs::Imu> imcoder_left_sub(nh, imcoder_left_topic_name_.c_str(), 1);
-    message_filters::Subscriber<sensor_msgs::Imu> imcoder_right_sub(nh, imcoder_right_topic_name_.c_str(), 1);
+    int queue_size = 1;
 
-    typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Imu, sensor_msgs::Imu> MySyncPolicy;
+    imcoder_left_sub_ = new imcoder_left_sub_type(nh, imcoder_left_topic_name_.c_str(), queue_size);
+    imcoder_right_sub_ = new imcoder_right_sub_type(nh, imcoder_right_topic_name_.c_str(), queue_size);
 
-    message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), imcoder_left_sub, imcoder_right_sub);
-
-    sync.registerCallback(boost::bind(&imcodersDiffOdom::imcodersCallback, this, _1, _2));
+    imcoders_sync_ = new message_filters::Synchronizer<ImcodersSyncPolicy>(ImcodersSyncPolicy(queue_size), *imcoder_left_sub_, *imcoder_right_sub_);
+    imcoders_sync_->registerCallback(boost::bind(&imcodersDiffOdom::imcodersCallback, this, _1, _2));
 
     return true;
 }
@@ -61,7 +66,7 @@ bool imcodersDiffOdom::getParams(const ros::NodeHandle& private_nh)
     return true;
 }
 
-void imcodersDiffOdom::publishOdom(nav_msgs::Odometry odom_msg)
+void imcodersDiffOdom::publishOdom(nav_msgs::Odometry& odom_msg)
 {
     odom_pub_.publish(odom_msg);
 }
@@ -73,13 +78,21 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
     sensor_msgs::Imu current_imcoder_right = *imcoder_right;
 
     ROS_INFO_STREAM(current_imcoder_left.header.frame_id);
+    ROS_INFO_STREAM(current_imcoder_right.header.frame_id);
+
+    /*TODO: Odometry computation*/
+
+    nav_msgs::Odometry odom;
+    odom.header.stamp = ros::Time::now();
+
+    publishOdom(odom);
 }
 
 void imcodersDiffOdom::run()
 {
     while (ros::ok())
     {
-        ros::spinOnce();
+        ros::spin();
     }
 }
 }  // namespace imcoder_reader
