@@ -3,7 +3,7 @@
 
     <arg name="parent_link"      value="imcoders_link"/>
     <arg name="imcoder01_enable" value="true"/>
-    <arg name="imcoder02_enable" value="true"/>
+    <arg name="imcoder02_enable" value="false"/>
     <arg name="imcoder03_enable" value="true"/>
     <arg name="imcoder07_enable" value="true"/>
 
