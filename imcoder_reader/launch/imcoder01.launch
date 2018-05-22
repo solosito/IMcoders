@@ -12,5 +12,5 @@
     </node>
 
     <!-- IMcoder01 TF -->
-    <node pkg="tf2_ros" type="static_transform_publisher" name="tf_$(arg parent_link)_to_imcoder01" args="0 0 0 0 0 0 $(arg parent_link) imcoder01_link" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="tf_$(arg parent_link)_to_imcoder01" args="0 0 0 0 0 0 $(arg parent_link) imcoder01_link" if="$(arg imcoder01_enable)"/>
 </launch>
