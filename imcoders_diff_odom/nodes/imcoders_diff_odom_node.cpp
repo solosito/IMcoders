@@ -1,7 +1,6 @@
 #include "imcoders_diff_odom/imcoders_diff_odom.h"
 #include "ros/ros.h"
 
-
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "imcoders_diff_odom");
