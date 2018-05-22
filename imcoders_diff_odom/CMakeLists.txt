@@ -26,6 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   roscpp
   sensor_msgs
+  message_filters
 )
 
 ###################################
@@ -34,7 +35,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 	INCLUDE_DIRS include
 	LIBRARIES imcoders_diff_odom
-	CATKIN_DEPENDS nav_msgs roscpp sensor_msgs
+	CATKIN_DEPENDS nav_msgs roscpp sensor_msgs message_filters
 )
 
 ###########
@@ -57,6 +58,6 @@ add_executable(
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
-	${catkin_LIBRARIES}
 	${PROJECT_NAME}
+	${catkin_LIBRARIES}
 )

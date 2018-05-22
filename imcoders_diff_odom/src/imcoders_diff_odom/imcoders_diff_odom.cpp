@@ -62,7 +62,7 @@ void imcodersDiffOdom::publishOdom()
 
 }
 
-void imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_left, const sensor_msgs::ImuConstPtr& imcoder_right)
+void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_left, const sensor_msgs::ImuConstPtr& imcoder_right)
 {
 	sensor_msgs::Imu current_imcoder_left = *imcoder_left;
 	sensor_msgs::Imu current_imcoder_right = *imcoder_right;

@@ -13,9 +13,11 @@
   <build_depend>nav_msgs</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>tf</build_depend>
+  <build_depend>message_filters</build_depend>
 
   <exec_depend>roscpp</exec_depend>
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <build_depend>tf</build_depend>
+  <exec_depend>message_filters</exec_depend>
 </package>
