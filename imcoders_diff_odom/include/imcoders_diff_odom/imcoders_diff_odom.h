@@ -39,7 +39,7 @@ class imcodersDiffOdom
     ///
     /// @brief      { function_description }
     ///
-    void publishOdom();
+    void publishOdom(nav_msgs::Odometry odom_msg);
 
     ///
     /// @brief      Subscribes to the left and right imcoders sensors in order to compute an odometry
@@ -66,9 +66,7 @@ class imcodersDiffOdom
     nav_msgs::Odometry odom_msg_;
 
     ros::Publisher odom_pub_;
-    /*message_filters::Subscriber<sensor_msgs::Imu> imcoder_left_sub_(nh, imcoder_left_topic_name_.c_str(), 1);*/
-    /*message_filters::Subscriber<sensor_msgs::Imu> imcoder_right_sub_(nh, imcoder_right_topic_name_.c_str(), 1);*/
-    // message_filters::Synchronizer<sensor_msgs::Imu, sensor_msgs::Imu> sync_;
+
 };
 }  // namespace imcoder_reader
 #endif  // IMCODERS_DIFF_ODOM
