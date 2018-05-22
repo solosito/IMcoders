@@ -1,6 +1,6 @@
 #include "imcoders_diff_odom/imcoders_diff_odom.h"
 #include <ros/console.h>
-#include <message_filters/sync_policies/approximate_time.h>
+
 namespace imcoders_diff_odom
 {
 
@@ -30,8 +30,7 @@ bool imcodersDiffOdom::init(ros::NodeHandle& nh)
 	typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Imu, sensor_msgs::Imu> MySyncPolicy;
 
 	message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), imcoder_left_sub_, imcoder_right_sub_);
-  	sync.registerCallback(boost::bind(&imcoders_diff_odom::imcodersDiffOdom::imcodersCallback, this, _1, _2));
-
+  	sync.registerCallback(boost::bind(&imcodersDiffOdom::imcodersCallback, this, _1, _2));
 
 	return true;
 }
