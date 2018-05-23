@@ -1,12 +1,14 @@
 #ifndef IMCODERS_DIFF_ODOM
 #define IMCODERS_DIFF_ODOM
 
+#include <ros/ros.h>
+#include <tf/transform_broadcaster.h>
+#include <nav_msgs/Odometry.h>
+#include <sensor_msgs/Imu.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/sync_policies/approximate_time.h>
 #include <message_filters/synchronizer.h>
-#include <nav_msgs/Odometry.h>
-#include <ros/ros.h>
-#include <sensor_msgs/Imu.h>
+
 
 typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Imu, sensor_msgs::Imu> ImcodersSyncPolicy;
 
@@ -61,9 +63,16 @@ class imcodersDiffOdom
 
     ros::NodeHandle& nh_;  // NodeHandle for class, defined outside
 
+    std::string odom_frame_id_;
+    std::string odom_child_frame_id_;
     std::string odom_topic_name_;
     std::string imcoder_left_topic_name_;
     std::string imcoder_right_topic_name_;
+
+    double wheel_radius_;
+    double wheel_separation_;
+    ros::Time last_time_;
+    tfScalar last_yaw_l, last_yaw_r;
 
     sensor_msgs::Imu imcoder_left_msg_;
     sensor_msgs::Imu imcoder_right_msg_;
