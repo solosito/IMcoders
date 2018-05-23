@@ -9,6 +9,10 @@ typedef message_filters::Subscriber<sensor_msgs::Imu> imcoder_right_sub_type;
 
 imcodersDiffOdom::imcodersDiffOdom(ros::NodeHandle& nh, const ros::NodeHandle& private_nh)
     : nh_(nh),
+      last_time_(0.0),
+      last_pitch_l(0.0),
+      last_pitch_r(0.0),
+      last_theta_(0.0),
       imcoder_left_sub_(NULL),
       imcoder_right_sub_(NULL),
       imcoders_sync_(NULL)
@@ -90,27 +94,25 @@ bool imcodersDiffOdom::getParams(const ros::NodeHandle& private_nh)
     return true;
 }
 
-void imcodersDiffOdom::publishOdom(nav_msgs::Odometry& odom_msg)
-{
-    odom_pub_.publish(odom_msg);
-}
-
 void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_left,
                                         const sensor_msgs::ImuConstPtr& imcoder_right)
 {
+    // Get info from imcoders attached to the wheels
     sensor_msgs::Imu wheel_l = *imcoder_left;
     sensor_msgs::Imu wheel_r = *imcoder_right;
 
+    // Compute time difference
+    ros::Time current_time = ros::Time::now();
+    double dt = (current_time - last_time_).toSec();
+
+    // Transform geometry_msgs::Quaternion to tf::Quaternion
     tf::Quaternion q_l;
     tf::Quaternion q_r;
 
     tf::quaternionMsgToTF(wheel_l.orientation, q_l);
     tf::quaternionMsgToTF(wheel_r.orientation, q_r);
-    
-    ros::Time current_time = ros::Time::now();
-    double dt = (current_time - last_time_).toSec();
-    last_time_ = current_time;
 
+    // Transform quaternion to Euler angles
     tfScalar yaw_l, pitch_l, roll_l;
     tfScalar yaw_r, pitch_r, roll_r;
 
@@ -120,47 +122,61 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
     mat_l.getEulerYPR(yaw_l, pitch_l, roll_l);
     mat_r.getEulerYPR(yaw_r, pitch_r, roll_r);
 
-    // m * rad / s
-    double v_l = wheel_radius_ * (yaw_l - last_yaw_l) / dt;
-    double v_r = wheel_radius_ * (yaw_r - last_yaw_r) / dt;
+    // Odometry computation
 
-    // m * rad / s
-    double v_sum = (v_r + v_l) / 2.0;
+    // Get linear velocity for each wheel ( v = r * dpitch / dt )
+    double v_l = wheel_radius_ * (pitch_l - last_pitch_l) / dt;
+    double v_r = wheel_radius_ * (pitch_r - last_pitch_r) / dt;
+
+    // Get mean velocity at the center of the robot
+    double v_mean  = (v_r + v_l) / 2.0;
     double v_diff = v_r - v_l;
 
-    // rad
-    double dtheta = v_diff / wheel_separation_ * dt;
+    double dtheta = v_diff / wheel_separation_; // angle speed in radians/sec
+    double theta = last_theta_ + dtheta * dt;   // abs. angle in global
 
-    // m
-    double vx = v_sum * cos(dtheta);
-    double vy = v_sum * sin(dtheta);
+    double vx = v_mean * cos(theta);
+    double vy = v_mean * sin(theta);
 
-    geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(dtheta);
+    double dx = vx * dt;
+    double dy = vy * dt;
 
-    // m/s
-    double dx = vx*dt;
-    double dy = vy*dt;
+    geometry_msgs::Quaternion odom_q = tf::createQuaternionMsgFromYaw(dtheta * dt);
 
-    // rad/s
-    double wtheta = dtheta/dt;
+    // Fill tf msg and publish it
+    geometry_msgs::TransformStamped odom_tf;
 
-    nav_msgs::Odometry odom;
+    odom_tf.header.stamp            = current_time;
+    odom_tf.header.frame_id         = odom_frame_id_;
+    odom_tf.child_frame_id          = odom_child_frame_id_;
+    odom_tf.transform.translation.x = dx;
+    odom_tf.transform.translation.y = dy;
+    odom_tf.transform.translation.z = 0.0;
+    odom_tf.transform.rotation      = odom_q;
 
-    odom.header.stamp = current_time;
-    odom.header.frame_id = odom_frame_id_;
-    odom.child_frame_id = odom_child_frame_id_;
+    odom_broadcaster_.sendTransform(odom_tf);
 
-    odom.pose.pose.position.x += dx;
-    odom.pose.pose.position.y += dy;
-    odom.pose.pose.position.z += 0.0;
-    odom.pose.pose.orientation = odom_quat;
-    odom.twist.twist.linear.x = vx;
-    odom.twist.twist.linear.y = vy;
-    odom.twist.twist.angular.z = wtheta;
+    // Fill odometry msg and publish it
+    nav_msgs::Odometry odom_msg;
 
-    // TODO: publish tf
+    odom_msg.header.stamp           = current_time;
+    odom_msg.header.frame_id        = odom_frame_id_;
+    odom_msg.child_frame_id         = odom_child_frame_id_;
+    odom_msg.pose.pose.position.x  += dx;
+    odom_msg.pose.pose.position.y  += dy;
+    odom_msg.pose.pose.position.z  += 0.0;
+    odom_msg.pose.pose.orientation  = odom_q;
+    odom_msg.twist.twist.linear.x   = vx;
+    odom_msg.twist.twist.linear.y   = vy;
+    odom_msg.twist.twist.angular.z  = dtheta;
 
-    publishOdom(odom);
+    odom_pub_.publish(odom_msg);
+
+    // Update values
+    last_pitch_l = pitch_l;
+    last_pitch_r = pitch_r;
+    last_theta_ = theta;
+    last_time_ = current_time;
 }
 
 void imcodersDiffOdom::run()

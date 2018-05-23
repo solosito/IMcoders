@@ -41,11 +41,6 @@ class imcodersDiffOdom
     bool getParams(const ros::NodeHandle& private_nh);
 
     ///
-    /// @brief      { function_description }
-    ///
-    void publishOdom(nav_msgs::Odometry& odom_msg);
-
-    ///
     /// @brief      Subscribes to the left and right imcoders sensors in order to compute an odometry
     ///
     /// @param[in]  imcoder_left   The left imcoder sensor
@@ -72,13 +67,16 @@ class imcodersDiffOdom
     double wheel_radius_;
     double wheel_separation_;
     ros::Time last_time_;
-    tfScalar last_yaw_l, last_yaw_r;
-
+    tfScalar last_pitch_l, last_pitch_r;
+    double last_theta_;
     sensor_msgs::Imu imcoder_left_msg_;
     sensor_msgs::Imu imcoder_right_msg_;
     nav_msgs::Odometry odom_msg_;
 
     ros::Publisher odom_pub_;
+
+    tf::TransformBroadcaster odom_broadcaster_;
+
 
     message_filters::Subscriber<sensor_msgs::Imu> *imcoder_left_sub_;
     message_filters::Subscriber<sensor_msgs::Imu> *imcoder_right_sub_;

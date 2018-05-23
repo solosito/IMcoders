@@ -27,6 +27,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   message_filters
+  tf
 )
 
 ###################################

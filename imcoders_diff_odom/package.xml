@@ -18,6 +18,6 @@
   <exec_depend>roscpp</exec_depend>
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
-  <build_depend>tf</build_depend>
+  <exec_depend>tf</exec_depend>
   <exec_depend>message_filters</exec_depend>
 </package>
