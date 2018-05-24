@@ -63,12 +63,14 @@ class imcodersDiffOdom
     std::string odom_topic_name_;
     std::string imcoder_left_topic_name_;
     std::string imcoder_right_topic_name_;
-
     double wheel_radius_;
     double wheel_separation_;
+
+
     ros::Time last_time_;
     tfScalar last_pitch_l, last_pitch_r;
-    double last_theta_;
+    double last_x_, last_y_, last_theta_;
+
     sensor_msgs::Imu imcoder_left_msg_;
     sensor_msgs::Imu imcoder_right_msg_;
     nav_msgs::Odometry odom_msg_;

@@ -10,8 +10,10 @@ typedef message_filters::Subscriber<sensor_msgs::Imu> imcoder_right_sub_type;
 imcodersDiffOdom::imcodersDiffOdom(ros::NodeHandle& nh, const ros::NodeHandle& private_nh)
     : nh_(nh),
       last_time_(0.0),
-      last_pitch_l(0.0),
-      last_pitch_r(0.0),
+      last_pitch_l_(0.0),
+      last_pitch_r_(0.0),
+      last_x_(0.0),
+      last_y_(0.0),
       last_theta_(0.0),
       imcoder_left_sub_(NULL),
       imcoder_right_sub_(NULL),
@@ -124,24 +126,42 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
 
     // Odometry computation
 
-    // Get linear velocity for each wheel ( v = r * dpitch / dt )
-    double v_l = wheel_radius_ * (pitch_l - last_pitch_l) / dt;
-    double v_r = wheel_radius_ * (pitch_r - last_pitch_r) / dt;
+    // Get angular velocity for each wheel ( w = dpitch / dt )
+    double w_l = (pitch_l - last_pitch_l_) / dt;
+    double w_r = (pitch_r - last_pitch_r_) / dt;
 
-    // Get mean velocity at the center of the robot
-    double v_mean  = (v_r + v_l) / 2.0;
-    double v_diff = v_r - v_l;
+    // Get linear velocity for each wheel ( v = r * w )
+    double v_l = wheel_radius_ * w_l;
+    double v_r = wheel_radius_ * w_r;
 
-    double dtheta = v_diff / wheel_separation_; // angle speed in radians/sec
-    double theta = last_theta_ + dtheta * dt;   // abs. angle in global
+    // Get distance between ICC and the midpoint of the wheel axis
+    double r_icc = wheel_separation_ / 2.0 (v_r + v_l) / (v_r - v_l);
 
-    double vx = v_mean * cos(theta);
-    double vy = v_mean * sin(theta);
+    // Get angular velocity for robot
+    double w = (v_r - v_l) / wheel_separation_;
 
-    double dx = vx * dt;
-    double dy = vy * dt;
+    // Get robot heading
+    double theta = w * dt + last_theta_;
 
-    geometry_msgs::Quaternion odom_q = tf::createQuaternionMsgFromYaw(dtheta * dt);
+    // Get center of rotation
+    double x_icc = last_x_ - r_icc * sin (last_theta_); // Last theta or current one???
+    double y_icc = last_y_ + r_icc * cos (last_theta_); // Last theta or current one???
+
+    // Get robot new position
+    double x = cos(w * dt) * (last_x_ - x_icc) - sin(w * dt) * (last_y_ - y_icc) + x_icc;
+    double y = sin(w * dt) * (last_x_ - x_icc) + cos(w * dt) * (last_y_ - y_icc) + y_icc;
+
+    // Get travelled distances
+    double dx = x - last_x_;
+    double dy = y - last_y_;
+    double dtheta = theta - last_theta_;
+
+    // Get robot linear velocities (w already computed)
+    double vx = dx/dt;
+    double vy = dy/dt;
+
+    // Transform yaw rotation in euler angles to quaternion
+    geometry_msgs::Quaternion dtheta_q = tf::createQuaternionMsgFromYaw(dtheta);
 
     // Fill tf msg and publish it
     geometry_msgs::TransformStamped odom_tf;
@@ -152,7 +172,7 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
     odom_tf.transform.translation.x = dx;
     odom_tf.transform.translation.y = dy;
     odom_tf.transform.translation.z = 0.0;
-    odom_tf.transform.rotation      = odom_q;
+    odom_tf.transform.rotation      = dtheta_q;
 
     odom_broadcaster_.sendTransform(odom_tf);
 
@@ -162,21 +182,23 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
     odom_msg.header.stamp           = current_time;
     odom_msg.header.frame_id        = odom_frame_id_;
     odom_msg.child_frame_id         = odom_child_frame_id_;
-    odom_msg.pose.pose.position.x  += dx;
-    odom_msg.pose.pose.position.y  += dy;
-    odom_msg.pose.pose.position.z  += 0.0;
-    odom_msg.pose.pose.orientation  = odom_q;
+    odom_msg.pose.pose.position.x   = dx;
+    odom_msg.pose.pose.position.y   = dy;
+    odom_msg.pose.pose.position.z   = 0.0;
+    odom_msg.pose.pose.orientation  = dtheta_q;
     odom_msg.twist.twist.linear.x   = vx;
     odom_msg.twist.twist.linear.y   = vy;
-    odom_msg.twist.twist.angular.z  = dtheta;
+    odom_msg.twist.twist.angular.z  = w;
 
     odom_pub_.publish(odom_msg);
 
     // Update values
-    last_pitch_l = pitch_l;
-    last_pitch_r = pitch_r;
-    last_theta_ = theta;
-    last_time_ = current_time;
+    last_time_    = current_time;
+    last_pitch_l_ = pitch_l;
+    last_pitch_r_ = pitch_r;
+    last_x_       = x;
+    last_y_       = y;
+    last_theta_   = theta;
 }
 
 void imcodersDiffOdom::run()
