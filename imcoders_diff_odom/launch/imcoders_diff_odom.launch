@@ -2,6 +2,7 @@
 <launch>
 
     <node pkg="imcoders_diff_odom" type="imcoders_diff_odom_node" name="imcoders_diff_odom" output="screen">
+        <param name="debug_mode"          	   value="true"/>
         <param name="odom_topic_name"          value="imcoders/odom"/>
         <param name="odom_frame"               value="imcoders_odom"/>
         <param name="odom_child_frame_id"      value="odom"/>

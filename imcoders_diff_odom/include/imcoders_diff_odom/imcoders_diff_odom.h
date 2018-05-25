@@ -66,9 +66,8 @@ class imcodersDiffOdom
     double wheel_radius_;
     double wheel_separation_;
 
-
     ros::Time last_time_;
-    tfScalar last_pitch_l, last_pitch_r;
+    tfScalar last_pitch_l_, last_pitch_r_;
     double last_x_, last_y_, last_theta_;
 
     sensor_msgs::Imu imcoder_left_msg_;
@@ -78,7 +77,6 @@ class imcodersDiffOdom
     ros::Publisher odom_pub_;
 
     tf::TransformBroadcaster odom_broadcaster_;
-
 
     message_filters::Subscriber<sensor_msgs::Imu> *imcoder_left_sub_;
     message_filters::Subscriber<sensor_msgs::Imu> *imcoder_right_sub_;

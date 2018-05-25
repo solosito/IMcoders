@@ -50,6 +50,15 @@ bool imcodersDiffOdom::init(ros::NodeHandle& nh)
 
 bool imcodersDiffOdom::getParams(const ros::NodeHandle& private_nh)
 {
+    bool debug_mode;
+    if(private_nh.getParam("debug_mode", debug_mode))
+    {
+        if(ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug))
+        {
+            ros::console::notifyLoggerLevelsChanged();
+        }
+        ROS_DEBUG("ROS console set on DEBUG mode");
+    }
 
     if (!private_nh.getParam("odom_topic_name", odom_topic_name_))
     {
@@ -130,18 +139,28 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
     double w_l = (pitch_l - last_pitch_l_) / dt;
     double w_r = (pitch_r - last_pitch_r_) / dt;
 
+    ROS_DEBUG_STREAM("dt: " << dt);
+    ROS_DEBUG_STREAM("pitch_r: " << pitch_r);
+    ROS_DEBUG_STREAM("pitch_l: " << pitch_l);
+    ROS_DEBUG_STREAM("dpitch_r: " << (pitch_r - last_pitch_r_));
+    ROS_DEBUG_STREAM("dpitch_l: " << (pitch_l - last_pitch_l_));
+    ROS_DEBUG_STREAM("w_l: " << w_l);
+    ROS_DEBUG_STREAM("w_r: " << w_r);
+
     // Get linear velocity for each wheel ( v = r * w )
     double v_l = wheel_radius_ * w_l;
     double v_r = wheel_radius_ * w_r;
 
     // Get distance between ICC and the midpoint of the wheel axis
-    double r_icc = wheel_separation_ / 2.0 (v_r + v_l) / (v_r - v_l);
+    double r_icc = wheel_separation_ / 2.0 * (v_r + v_l) / (v_r - v_l);
 
     // Get angular velocity for robot
     double w = (v_r - v_l) / wheel_separation_;
+    ROS_DEBUG_STREAM("w: " << w);
 
     // Get robot heading
     double theta = w * dt + last_theta_;
+    ROS_DEBUG_STREAM("theta: " << theta);
 
     // Get center of rotation
     double x_icc = last_x_ - r_icc * sin (last_theta_); // Last theta or current one???
@@ -150,6 +169,8 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
     // Get robot new position
     double x = cos(w * dt) * (last_x_ - x_icc) - sin(w * dt) * (last_y_ - y_icc) + x_icc;
     double y = sin(w * dt) * (last_x_ - x_icc) + cos(w * dt) * (last_y_ - y_icc) + y_icc;
+    ROS_DEBUG_STREAM("x: " << x);
+    ROS_DEBUG_STREAM("y: " << y << "\n");
 
     // Get travelled distances
     double dx = x - last_x_;
