@@ -65,6 +65,7 @@ class imcodersDiffOdom
     std::string imcoder_right_topic_name_;
     double wheel_radius_;
     double wheel_separation_;
+    double dtheta_threshold_;
 
     ros::Time last_time_;
     tfScalar last_pitch_l_, last_pitch_r_;
