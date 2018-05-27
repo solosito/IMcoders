@@ -324,7 +324,7 @@
       <rosDebugLevel>Debug</rosDebugLevel>
       <publishWheelTF>false</publishWheelTF>
       <robotNamespace>/</robotNamespace>
-      <publishTf>1</publishTf>
+      <publishTf>false</publishTf>
       <publishWheelJointState>false</publishWheelJointState>
       <alwaysOn>true</alwaysOn>
       <updateRate>100.0</updateRate>

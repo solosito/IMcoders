@@ -5,7 +5,7 @@
         <param name="debug_mode"          	   value="true"/>
         <param name="odom_topic_name"          value="imcoders/odom"/>
         <param name="odom_frame"               value="imcoders_odom"/>
-        <param name="odom_child_frame_id"      value="odom"/>
+        <param name="odom_child_frame_id"      value="base_link"/>
         <param name="imcoder_left_topic_name"  value="imu_left"/>
         <param name="imcoder_right_topic_name" value="imu_right"/>
         <param name="wheel_radius"             value="0.04"/>

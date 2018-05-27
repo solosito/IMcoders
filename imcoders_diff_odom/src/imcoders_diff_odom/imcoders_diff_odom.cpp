@@ -132,19 +132,50 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
         tf::Quaternion dq_l = q_l * last_q_l_.inverse();
         tf::Quaternion dq_r = q_r * last_q_r_.inverse();
 
-        double dpitch_l = 2.0 * acos(dq_l.getW());
-        double dpitch_r = 2.0 * acos(dq_r.getW());
+        // Transform quaternion to Euler angles
+        tfScalar yaw_l, pitch_l, roll_l;
+        tfScalar yaw_r, pitch_r, roll_r;
 
+        tf::Matrix3x3 mat_l(dq_l);
+        tf::Matrix3x3 mat_r(dq_r);
+
+        mat_l.getEulerYPR(yaw_l, pitch_l, roll_l);
+        mat_r.getEulerYPR(yaw_r, pitch_r, roll_r);
+
+        ROS_DEBUG_STREAM("yaw_l: " << yaw_l);
+        ROS_DEBUG_STREAM("pitch_l: " << pitch_l);
+        ROS_DEBUG_STREAM("roll_l: " << roll_l);
+
+        double direction_l = (dq_l[2] > 0) ? 1.0 : 1.0;
+        double direction_r = (dq_r[2] > 0) ? 1.0 : 1.0;
+
+        double dpitch_l = 2.0 * acos(dq_l.getW()) * direction_l;
+        if(fabs(dq_l.getW()) > 1.0)
+            if(dq_l.getW() > 1.0)
+                dpitch_l = 2.0 *  0.0 * direction_l;
+            if(dq_l.getW() < -1.0)
+                dpitch_l = 2.0 *  M_PI * direction_l;
+
+        double dpitch_r = 2.0 * acos(dq_r.getW()) * direction_r;
+        if(fabs(dq_r.getW()) > 1.0)
+            if(dq_r.getW() > 1.0)
+                dpitch_r = 2.0 *  0.0 * direction_r;
+            if(dq_r.getW() < -1.0)
+                dpitch_r = 2.0 *  M_PI * direction_r;
+
+        ROS_DEBUG_STREAM("dq_l[0]: " << dq_l[0]);
+        ROS_DEBUG_STREAM("dq_l[1]: " << dq_l[1]);
+        ROS_DEBUG_STREAM("dq_l[2]: " << dq_l[2]);
+        ROS_DEBUG_STREAM("dq_l[3]: " << dq_l[3]);
+        ROS_DEBUG_STREAM("dq_l.getW(): " << dq_l.getW());
         ROS_DEBUG_STREAM("dpitch_l: " << dpitch_l);
+
+        if(std::isnan(dpitch_l))
+            dpitch_l = 0.0;
 
         cum_pitch_l_ += dpitch_l;
 
         ROS_DEBUG_STREAM("cum_pitch_l: " << cum_pitch_l_);
-
-        if(std::isnan(dpitch_l))
-        {
-            dpitch_l = 0.0;
-        }
         // Transform quaternion to Euler angles
 
         // Odometry computation
@@ -171,27 +202,20 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
         double r_icc, w, theta, dtheta, x_icc, y_icc, x, y, dx, dy, vx, vy;
 
         // Get distance between ICC and the midpoint of the wheel axis
-        if(v_diff != 0)
+        if(fabs(v_diff) > dtheta_threshold_)
         {
             r_icc = wheel_separation_ / 2.0 * v_sum / v_diff;
 
             // Get angular velocity for robot
             w = v_diff / wheel_separation_;
 
-            // Print debug info
-            ROS_DEBUG_STREAM("w: " << w);
-
             // Get robot heading
             dtheta = w * dt;
-            theta = dtheta + last_theta_;
+            theta = fmod(dtheta + last_theta_,2.0*M_PI);
 
             // If the diference it is too small, do not use it
             //if(dtheta < dtheta_threshold_)
             //    theta = 0.0;
-
-            // Print debug info
-            ROS_DEBUG_STREAM("dtheta: " << dtheta);
-            ROS_DEBUG_STREAM("theta: " << theta);
 
             // Get center of rotation
             x_icc = last_x_ - r_icc * sin (last_theta_);
@@ -200,10 +224,6 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
             // Get robot new position
             x = cos(w * dt) * (last_x_ - x_icc) - sin(w * dt) * (last_y_ - y_icc) + x_icc;
             y = sin(w * dt) * (last_x_ - x_icc) + cos(w * dt) * (last_y_ - y_icc) + y_icc;
-
-            // Print debug info
-            ROS_DEBUG_STREAM("x: " << x);
-            ROS_DEBUG_STREAM("y: " << y << "\n");
 
             // Get travelled distances
             dx = x - last_x_;
@@ -215,7 +235,6 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
         }
         else
         {
-
             w = 0.0;
             theta = last_theta_;
 
@@ -228,6 +247,18 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
             x = last_x_ + dx;
             y = last_y_ + dy;
         }
+
+        if(std::isnan(theta))
+        {
+            ros::shutdown();
+
+        }
+
+        // Print debug info
+            ROS_DEBUG_STREAM("dtheta: " << dtheta);
+            ROS_DEBUG_STREAM("theta: " << theta);
+            ROS_DEBUG_STREAM("x: " << x);
+            ROS_DEBUG_STREAM("y: " << y << "\n");
 
         // Transform yaw rotation in euler angles to quaternion
         geometry_msgs::Quaternion theta_q = tf::createQuaternionMsgFromYaw(theta);
