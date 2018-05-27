@@ -10,8 +10,6 @@ typedef message_filters::Subscriber<sensor_msgs::Imu> imcoder_right_sub_type;
 imcodersDiffOdom::imcodersDiffOdom(ros::NodeHandle& nh, const ros::NodeHandle& private_nh)
     : nh_(nh),
       last_time_(0.0),
-      last_pitch_l_(0.0),
-      last_pitch_r_(0.0),
       last_x_(0.0),
       last_y_(0.0),
       last_theta_(0.0),
@@ -124,22 +122,39 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
 
     if(dt != 0.0)
     {
-        // Get pitch for each wheel
-        double pitch_l = 2.0 * acos(wheel_l.orientation.w);
-        double pitch_r = 2.0 * acos(wheel_r.orientation.w);
+        // Transform geometry_msgs::Quaternion to tf::Quaternion
+        tf::Quaternion q_l;
+        tf::Quaternion q_r;
+
+        tf::quaternionMsgToTF(wheel_l.orientation, q_l);
+        tf::quaternionMsgToTF(wheel_r.orientation, q_r);
+
+        tf::Quaternion dq_l = q_l * last_q_l_.inverse();
+        tf::Quaternion dq_r = q_r * last_q_r_.inverse();
+
+        double dpitch_l = 2.0 * acos(dq_l.getW());
+        double dpitch_r = 2.0 * acos(dq_r.getW());
+
+        ROS_DEBUG_STREAM("dpitch_l: " << dpitch_l);
+
+        cum_pitch_l_ += dpitch_l;
+
+        ROS_DEBUG_STREAM("cum_pitch_l: " << cum_pitch_l_);
+
+        if(std::isnan(dpitch_l))
+        {
+            dpitch_l = 0.0;
+        }
+        // Transform quaternion to Euler angles
 
         // Odometry computation
 
         // Get angular velocity for each wheel ( w = dpitch / dt )
-        double w_l = (pitch_l - last_pitch_l_) / dt;
-        double w_r = (pitch_r - last_pitch_r_) / dt;
+        double w_l = (dpitch_l) / dt;
+        double w_r = (dpitch_r) / dt;
 
         // Print debug info
         ROS_DEBUG_STREAM("dt: " << dt);
-        ROS_DEBUG_STREAM("pitch_r: " << pitch_r);
-        ROS_DEBUG_STREAM("pitch_l: " << pitch_l);
-        ROS_DEBUG_STREAM("dpitch_r: " << (pitch_r - last_pitch_r_));
-        ROS_DEBUG_STREAM("dpitch_l: " << (pitch_l - last_pitch_l_));
         ROS_DEBUG_STREAM("w_l: " << w_l);
         ROS_DEBUG_STREAM("w_r: " << w_r);
 
@@ -147,49 +162,75 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
         double v_l = wheel_radius_ * w_l;
         double v_r = wheel_radius_ * w_r;
 
+        ROS_DEBUG_STREAM("v_l: " << v_l);
+        ROS_DEBUG_STREAM("v_r: " << v_r);
+
+        double v_sum = v_r + v_l;
+        double v_diff = v_l - v_r;
+
+        double r_icc, w, theta, dtheta, x_icc, y_icc, x, y, dx, dy, vx, vy;
+
         // Get distance between ICC and the midpoint of the wheel axis
-        double r_icc = wheel_separation_ / 2.0 * (v_r + v_l) / (v_r - v_l);
+        if(v_diff != 0)
+        {
+            r_icc = wheel_separation_ / 2.0 * v_sum / v_diff;
 
-        // Get angular velocity for robot
-        double w = (v_r - v_l) / wheel_separation_;
+            // Get angular velocity for robot
+            w = v_diff / wheel_separation_;
 
-        // Print debug info
-        ROS_DEBUG_STREAM("w: " << w);
+            // Print debug info
+            ROS_DEBUG_STREAM("w: " << w);
 
-        // Get robot heading
-        double theta = w * dt + last_theta_;;
-        double dtheta = theta - last_theta_;
+            // Get robot heading
+            dtheta = w * dt;
+            theta = dtheta + last_theta_;
 
-        // If the diference it is too small, do not use it
-        if(dtheta < dtheta_threshold_)
-            theta = 0.0;
+            // If the diference it is too small, do not use it
+            //if(dtheta < dtheta_threshold_)
+            //    theta = 0.0;
 
-        // Print debug info
-        ROS_DEBUG_STREAM("dtheta: " << dtheta);
-        ROS_DEBUG_STREAM("theta: " << theta);
+            // Print debug info
+            ROS_DEBUG_STREAM("dtheta: " << dtheta);
+            ROS_DEBUG_STREAM("theta: " << theta);
 
-        // Get center of rotation
-        double x_icc = last_x_ - r_icc * sin (last_theta_);
-        double y_icc = last_y_ + r_icc * cos (last_theta_);
+            // Get center of rotation
+            x_icc = last_x_ - r_icc * sin (last_theta_);
+            y_icc = last_y_ + r_icc * cos (last_theta_);
 
-        // Get robot new position
-        double x = cos(w * dt) * (last_x_ - x_icc) - sin(w * dt) * (last_y_ - y_icc) + x_icc;
-        double y = sin(w * dt) * (last_x_ - x_icc) + cos(w * dt) * (last_y_ - y_icc) + y_icc;
+            // Get robot new position
+            x = cos(w * dt) * (last_x_ - x_icc) - sin(w * dt) * (last_y_ - y_icc) + x_icc;
+            y = sin(w * dt) * (last_x_ - x_icc) + cos(w * dt) * (last_y_ - y_icc) + y_icc;
 
-        // Print debug info
-        ROS_DEBUG_STREAM("x: " << x);
-        ROS_DEBUG_STREAM("y: " << y << "\n");
+            // Print debug info
+            ROS_DEBUG_STREAM("x: " << x);
+            ROS_DEBUG_STREAM("y: " << y << "\n");
 
-        // Get travelled distances
-        double dx = x - last_x_;
-        double dy = y - last_y_;
+            // Get travelled distances
+            dx = x - last_x_;
+            dy = y - last_y_;
 
-        // Get robot linear velocities (w already computed)
-        double vx = dx/dt;
-        double vy = dy/dt;
+            // Get robot linear velocities (w already computed)
+            vx = dx/dt;
+            vy = dy/dt;
+        }
+        else
+        {
+
+            w = 0.0;
+            theta = last_theta_;
+
+            vx = v_sum / 2.0;
+            vy = 0.0;
+
+            dx = vx * dt;
+            dy = vy * dt;
+
+            x = last_x_ + dx;
+            y = last_y_ + dy;
+        }
 
         // Transform yaw rotation in euler angles to quaternion
-        geometry_msgs::Quaternion dtheta_q = tf::createQuaternionMsgFromYaw(dtheta);
+        geometry_msgs::Quaternion theta_q = tf::createQuaternionMsgFromYaw(theta);
 
         // Fill tf msg and publish it
         geometry_msgs::TransformStamped odom_tf;
@@ -197,10 +238,10 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
         odom_tf.header.stamp            = current_time;
         odom_tf.header.frame_id         = odom_frame_id_;
         odom_tf.child_frame_id          = odom_child_frame_id_;
-        odom_tf.transform.translation.x = dx;
-        odom_tf.transform.translation.y = dy;
+        odom_tf.transform.translation.x = x;
+        odom_tf.transform.translation.y = y;
         odom_tf.transform.translation.z = 0.0;
-        odom_tf.transform.rotation      = dtheta_q;
+        odom_tf.transform.rotation      = theta_q;
 
         odom_broadcaster_.sendTransform(odom_tf);
 
@@ -213,7 +254,7 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
         odom_msg.pose.pose.position.x  = x;
         odom_msg.pose.pose.position.y  = y;
         odom_msg.pose.pose.position.z  = 0.0;
-        odom_msg.pose.pose.orientation = dtheta_q;
+        odom_msg.pose.pose.orientation = theta_q;
         odom_msg.twist.twist.linear.x  = vx;
         odom_msg.twist.twist.linear.y  = vy;
         odom_msg.twist.twist.angular.z = w;
@@ -221,11 +262,11 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
         odom_pub_.publish(odom_msg);
 
         // Update values
-        last_pitch_l_ = pitch_l;
-        last_pitch_r_ = pitch_r;
         last_x_       = x;
         last_y_       = y;
         last_theta_   = theta;
+        last_q_l_     = q_l;
+        last_q_r_     = q_r;
     }
 
     // Update time

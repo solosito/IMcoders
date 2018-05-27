@@ -68,8 +68,10 @@ class imcodersDiffOdom
     double dtheta_threshold_;
 
     ros::Time last_time_;
-    tfScalar last_pitch_l_, last_pitch_r_;
     double last_x_, last_y_, last_theta_;
+    tf::Quaternion last_q_l_, last_q_r_;
+
+    double cum_pitch_l_;
 
     sensor_msgs::Imu imcoder_left_msg_;
     sensor_msgs::Imu imcoder_right_msg_;
