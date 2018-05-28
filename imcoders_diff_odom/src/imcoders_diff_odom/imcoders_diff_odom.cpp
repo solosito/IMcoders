@@ -129,32 +129,31 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
         tf::quaternionMsgToTF(wheel_l.orientation, q_l);
         tf::quaternionMsgToTF(wheel_r.orientation, q_r);
 
+        // Get rotation quaternion between current quaternion and last one
         tf::Quaternion dq_l = q_l * last_q_l_.inverse();
         tf::Quaternion dq_r = q_r * last_q_r_.inverse();
 
+        // Get imaginary parts of quaternions (x, y, z)
         tf::Vector3 imag_dq_l(dq_l[1], dq_l[2], dq_l[3]);
         tf::Vector3 imag_dq_r(dq_l[1], dq_l[2], dq_l[3]);
 
+        // Define x_axis vector
         tf::Vector3 x_axis(1.0, 0.0, 0.0);
-        tf::Vector3 y_axis(0.0, 1.0, 0.0);
-        tf::Vector3 z_axis(0.0, 0.0, 1.0);
 
+        // Get direction of rotation using dot product
         double direction_l = (imag_dq_l.dot(x_axis) > 0.0) ? 1.0 : -1.0;
         double direction_r = (imag_dq_r.dot(x_axis) > 0.0) ? 1.0 : -1.0;
 
+        // Print debug info
         ROS_DEBUG_STREAM("direction_l_x: " << imag_dq_l.dot(x_axis));
         ROS_DEBUG_STREAM("direction_r_x: " << imag_dq_r.dot(x_axis));
-        ROS_DEBUG_STREAM("direction_l_y: " << imag_dq_l.dot(y_axis));
-        ROS_DEBUG_STREAM("direction_r_y: " << imag_dq_r.dot(y_axis));
-        ROS_DEBUG_STREAM("direction_l_z: " << imag_dq_l.dot(z_axis));
-        ROS_DEBUG_STREAM("direction_r_z: " << imag_dq_r.dot(z_axis));
-
         ROS_DEBUG_STREAM("direction_l: " << direction_l);
         ROS_DEBUG_STREAM("direction_r: " << direction_r);
 
+        // Get the signed pitch
         double dpitch_l = 2.0 * acos(dq_l.getW()) * direction_l;
         double dpitch_r = 2.0 * acos(dq_r.getW()) * direction_r;
-        
+
         if(std::isnan(dpitch_l))
             dpitch_l = 0.0;
         if(std::isnan(dpitch_r))
@@ -162,9 +161,9 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
 
         cum_pitch_l_ += dpitch_l;
 
+        // Print debug info
         ROS_DEBUG_STREAM("dpitch_l: " << dpitch_l);
         ROS_DEBUG_STREAM("cum_pitch_l: " << cum_pitch_l_);
-        // Transform quaternion to Euler angles
 
         // Odometry computation
 
@@ -181,6 +180,7 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
         double v_l = wheel_radius_ * w_l;
         double v_r = wheel_radius_ * w_r;
 
+        // Print debug info
         ROS_DEBUG_STREAM("v_l: " << v_l);
         ROS_DEBUG_STREAM("v_r: " << v_r);
 
@@ -243,10 +243,10 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
         }
 
         // Print debug info
-            ROS_DEBUG_STREAM("dtheta: " << dtheta);
-            ROS_DEBUG_STREAM("theta: " << theta);
-            ROS_DEBUG_STREAM("x: " << x);
-            ROS_DEBUG_STREAM("y: " << y << "\n");
+        ROS_DEBUG_STREAM("dtheta: " << dtheta);
+        ROS_DEBUG_STREAM("theta: " << theta);
+        ROS_DEBUG_STREAM("x: " << x);
+        ROS_DEBUG_STREAM("y: " << y << "\n");
 
         // Transform yaw rotation in euler angles to quaternion
         geometry_msgs::Quaternion theta_q = tf::createQuaternionMsgFromYaw(theta);
