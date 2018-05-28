@@ -132,49 +132,37 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
         tf::Quaternion dq_l = q_l * last_q_l_.inverse();
         tf::Quaternion dq_r = q_r * last_q_r_.inverse();
 
-        // Transform quaternion to Euler angles
-        tfScalar yaw_l, pitch_l, roll_l;
-        tfScalar yaw_r, pitch_r, roll_r;
+        tf::Vector3 imag_dq_l(dq_l[1], dq_l[2], dq_l[3]);
+        tf::Vector3 imag_dq_r(dq_l[1], dq_l[2], dq_l[3]);
 
-        tf::Matrix3x3 mat_l(dq_l);
-        tf::Matrix3x3 mat_r(dq_r);
+        tf::Vector3 x_axis(1.0, 0.0, 0.0);
+        tf::Vector3 y_axis(0.0, 1.0, 0.0);
+        tf::Vector3 z_axis(0.0, 0.0, 1.0);
 
-        mat_l.getEulerYPR(yaw_l, pitch_l, roll_l);
-        mat_r.getEulerYPR(yaw_r, pitch_r, roll_r);
+        double direction_l = (imag_dq_l.dot(x_axis) > 0.0) ? 1.0 : -1.0;
+        double direction_r = (imag_dq_r.dot(x_axis) > 0.0) ? 1.0 : -1.0;
 
-        ROS_DEBUG_STREAM("yaw_l: " << yaw_l);
-        ROS_DEBUG_STREAM("pitch_l: " << pitch_l);
-        ROS_DEBUG_STREAM("roll_l: " << roll_l);
+        ROS_DEBUG_STREAM("direction_l_x: " << imag_dq_l.dot(x_axis));
+        ROS_DEBUG_STREAM("direction_r_x: " << imag_dq_r.dot(x_axis));
+        ROS_DEBUG_STREAM("direction_l_y: " << imag_dq_l.dot(y_axis));
+        ROS_DEBUG_STREAM("direction_r_y: " << imag_dq_r.dot(y_axis));
+        ROS_DEBUG_STREAM("direction_l_z: " << imag_dq_l.dot(z_axis));
+        ROS_DEBUG_STREAM("direction_r_z: " << imag_dq_r.dot(z_axis));
 
-        double direction_l = (dq_l[2] > 0) ? 1.0 : 1.0;
-        double direction_r = (dq_r[2] > 0) ? 1.0 : 1.0;
+        ROS_DEBUG_STREAM("direction_l: " << direction_l);
+        ROS_DEBUG_STREAM("direction_r: " << direction_r);
 
         double dpitch_l = 2.0 * acos(dq_l.getW()) * direction_l;
-        if(fabs(dq_l.getW()) > 1.0)
-            if(dq_l.getW() > 1.0)
-                dpitch_l = 2.0 *  0.0 * direction_l;
-            if(dq_l.getW() < -1.0)
-                dpitch_l = 2.0 *  M_PI * direction_l;
-
         double dpitch_r = 2.0 * acos(dq_r.getW()) * direction_r;
-        if(fabs(dq_r.getW()) > 1.0)
-            if(dq_r.getW() > 1.0)
-                dpitch_r = 2.0 *  0.0 * direction_r;
-            if(dq_r.getW() < -1.0)
-                dpitch_r = 2.0 *  M_PI * direction_r;
-
-        ROS_DEBUG_STREAM("dq_l[0]: " << dq_l[0]);
-        ROS_DEBUG_STREAM("dq_l[1]: " << dq_l[1]);
-        ROS_DEBUG_STREAM("dq_l[2]: " << dq_l[2]);
-        ROS_DEBUG_STREAM("dq_l[3]: " << dq_l[3]);
-        ROS_DEBUG_STREAM("dq_l.getW(): " << dq_l.getW());
-        ROS_DEBUG_STREAM("dpitch_l: " << dpitch_l);
-
+        
         if(std::isnan(dpitch_l))
             dpitch_l = 0.0;
+        if(std::isnan(dpitch_r))
+            dpitch_r = 0.0;
 
         cum_pitch_l_ += dpitch_l;
 
+        ROS_DEBUG_STREAM("dpitch_l: " << dpitch_l);
         ROS_DEBUG_STREAM("cum_pitch_l: " << cum_pitch_l_);
         // Transform quaternion to Euler angles
 
