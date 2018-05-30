@@ -55,7 +55,9 @@ or (in case you have the [catkin_tools](http://catkin-tools.readthedocs.io/en/la
 1. Launch Rviz for visualization  
 `roslaunch imcoders_rviz_launchers view_box.launch`  
 
-![](https://github.com/solosito/IMcoders/blob/devel/doc/images/box_robot_gazebo.png)
+![](https://github.com/solosito/IMcoders/blob/devel/doc/images/box_robot_gazebo.png)  
+
+![](https://github.com/solosito/IMcoders/blob/devel/doc/images/box_gz-rotation.gif)
 
 ### Differential wheeled robot with IMcoders  
 1. Launch simulator  
@@ -80,6 +82,10 @@ or (in case you have the [catkin_tools](http://catkin-tools.readthedocs.io/en/la
 `roslaunch imcoders_rviz_launchers view_imcoders_boxes.launch`  
 
 ![](https://github.com/solosito/IMcoders/blob/devel/doc/images/imcoders_rviz.png)
+
+Example video:
+
+[![Rviz visualization boxes](https://img.youtube.com/vi/ohp5S3b75mg/0.jpg)](https://www.youtube.com/watch?v=ohp5S3b75mg)
 
 ## Troubleshooting
 ### Missing dependencies while building
