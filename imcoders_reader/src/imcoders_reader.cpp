@@ -1,7 +1,7 @@
-#include "imcoder_reader.h"
+#include "imcoders_reader.h"
 #include <ros/console.h>
 
-namespace imcoder_reader
+namespace imcoders_reader
 {
 IMCoder::IMCoder(ros::NodeHandle& nh, const ros::NodeHandle& private_nh)
     : nh_(nh)
@@ -25,9 +25,9 @@ void IMCoder::init(ros::NodeHandle& nh){
     mag_pub_ = nh.advertise<sensor_msgs::MagneticField>(mag_topic_name_.c_str(), 1);
 
     // Load the RTIMULib.ini config file
-    ROS_DEBUG("Loading IMU Settingsy");    
-    RTIMUSettings *settings_ = new RTIMUSettings(calibration_file_path_.c_str(), 
-                                                 calibration_file_name_.c_str()); 
+    ROS_DEBUG("Loading IMU Settingsy");
+    RTIMUSettings *settings_ = new RTIMUSettings(calibration_file_path_.c_str(),
+                                                 calibration_file_name_.c_str());
 
     RTIMU *imu_ = RTIMU::createIMU(settings_);
 
@@ -44,7 +44,7 @@ void IMCoder::init(ros::NodeHandle& nh){
     // Set the Fusion coefficient
     ROS_DEBUG("Setting the fusion coefficient");
     imu_->setSlerpPower(0.02);
-    
+
     // Enable the sensors
     ROS_DEBUG("Enabling sensors");
     imu_->setGyroEnable(true);
@@ -99,7 +99,7 @@ bool IMCoder::getROSParams(const ros::NodeHandle& private_nh)
         frame_id_ = "imu_link";
     }
     ROS_DEBUG("frame_id: %s", frame_id_.c_str());
-    
+
     return true;
 }
 
@@ -107,10 +107,10 @@ void IMCoder::pubData()
 {
     imu_msg_.header.stamp                    = ros::Time::now();
     imu_msg_.header.frame_id                 = frame_id_;
-    imu_msg_.orientation.x                   = imu_data_.fusionQPose.x(); 
-    imu_msg_.orientation.y                   = imu_data_.fusionQPose.y(); 
-    imu_msg_.orientation.z                   = imu_data_.fusionQPose.z(); 
-    imu_msg_.orientation.w                   = imu_data_.fusionQPose.scalar(); 
+    imu_msg_.orientation.x                   = imu_data_.fusionQPose.x();
+    imu_msg_.orientation.y                   = imu_data_.fusionQPose.y();
+    imu_msg_.orientation.z                   = imu_data_.fusionQPose.z();
+    imu_msg_.orientation.w                   = imu_data_.fusionQPose.scalar();
     imu_msg_.angular_velocity.x              = imu_data_.gyro.x();
     imu_msg_.angular_velocity.y              = imu_data_.gyro.y();
     imu_msg_.angular_velocity.z              = imu_data_.gyro.z();
@@ -164,4 +164,4 @@ void IMCoder::spin()
         update_rate_.sleep();
     }
 }
-} // namespace imcoder_reader
+} // namespace imcoders_reader

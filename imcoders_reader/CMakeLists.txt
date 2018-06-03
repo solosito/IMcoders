@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(imcoder_reader)
+project(imcoders_reader)
 
 # Set warnings
 set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -Wall -Wextra -O3 -march=native")
@@ -33,7 +33,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## The catkin_package macro generates cmake config files for the package
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES imcoder_reader	
+  LIBRARIES imcoders_reader
   CATKIN_DEPENDS roscpp sensor_msgs
 )
 
@@ -47,19 +47,19 @@ include_directories(
 )
 
 # Declare a cpp library
-add_library(imcoder_reader
-  src/imcoder_reader.cpp
+add_library(imcoders_reader
+  src/imcoders_reader.cpp
 )
 
 ## Declare a cpp executable
-add_executable(imcoder_reader_node nodes/imcoder_reader_node.cpp)
+add_executable(imcoders_reader_node nodes/imcoders_reader_node.cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(imcoder_reader
+target_link_libraries(imcoders_reader
   ${catkin_LIBRARIES}
   RTIMULib
 )
 
-target_link_libraries(imcoder_reader_node
-  imcoder_reader
+target_link_libraries(imcoders_reader_node
+  imcoders_reader
 )

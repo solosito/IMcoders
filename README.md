@@ -11,7 +11,7 @@ http://wiki.ros.org/kinetic/Installation/Ubuntu
 `sudo apt install ros-kinetic-imu-tools`  
 
 ### (Optional) RTIMULib2
-Install this package if you want to use the `imcoder_reader` for using the hardware 
+Install this package if you want to use the `imcoders_reader` for using the hardware 
 ```
 git clone -b NoQt https://github.com/Pablo-Leyva/RTIMULib2 ~/imcoders_ws/third-party/RTIMULib2
 mkdir -p ~/imcoders_ws/third-party/RTIMULib2/RTHost/build && cd "$_"
@@ -27,8 +27,8 @@ sudo ldconfig
 1. Clone this repo  
 `git clone --recursive -b devel https://github.com/solosito/IMcoders.git ~/imcoders_ws/src/.`  
 
-    If you installed [RTIMULib2](https://github.com/solosito/IMcoders#optional-rtimulib2), remove the `CATKIN_IGNORE` file from `imcoder_reader` in order to also compile that package  
-    `rm ~/imcoders_ws/src/imcoder_reader/CATKIN_IGNORE`
+    If you installed [RTIMULib2](https://github.com/solosito/IMcoders#optional-rtimulib2), remove the `CATKIN_IGNORE` file from `imcoders_reader` in order to also compile that package  
+    `rm ~/imcoders_ws/src/imcoders_reader/CATKIN_IGNORE`
 
 1. Build the code  
 Go to the workspace folder  
@@ -76,7 +76,7 @@ or (in case you have the [catkin_tools](http://catkin-tools.readthedocs.io/en/la
 `source ~/imcoders_ws/third-party/RTIMULib2/RTHost/build/devel/setup.bash`  
 
 1. Launch node for sensors  
-`roslaunch imcoder_reader imcoders_all_timed.launch`  
+`roslaunch imcoders_reader imcoders_all_timed.launch`  
 
 1. Launch visualization  
 `roslaunch imcoders_rviz_launchers view_imcoders_boxes.launch`  
