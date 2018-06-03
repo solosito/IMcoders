@@ -5,7 +5,7 @@
 
     <!-- IMcoder03 node -->
     <node pkg="RTIMUHOST" type="RTHostIMUNoQt" name="imcoder03_node" output="screen" if="$(arg imcoder03_enable)">
-        <param name="path_to_settings_file" value="$(find imcoder_reader)/config/RTHostIMU_03.ini"/>
+        <param name="path_to_settings_file" value="$(find imcoders_reader)/config/RTHostIMU_03.ini"/>
         <param name="imcoder_name"          value="imcoder03"/>
         <param name="serial_port"           value="/dev/rfcomm3"/>
         <param name="frame_id"              value="imcoder03_link"/>
