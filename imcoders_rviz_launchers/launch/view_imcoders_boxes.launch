@@ -2,6 +2,6 @@
 <launch>
 
 	<!-- Launch visualization in rviz -->
-	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find imcoders_rviz_launchers)/rviz/imcoder_boxes.rviz" required="true" />
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find imcoders_rviz_launchers)/rviz/imcoders_boxes.rviz" required="true" />
 
 </launch>
