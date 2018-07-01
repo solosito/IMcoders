@@ -58,6 +58,8 @@ class imcodersDiffOdom
 
     ros::NodeHandle& nh_;  // NodeHandle for class, defined outside
 
+    bool debug_mode_;
+    bool publish_tf_;
     std::string odom_frame_id_;
     std::string odom_child_frame_id_;
     std::string odom_topic_name_;
@@ -70,6 +72,7 @@ class imcodersDiffOdom
     ros::Time last_time_;
     double last_x_, last_y_, last_theta_;
     tf::Quaternion last_q_l_, last_q_r_;
+    tf::Vector3 last_orientation_imu_;
 
     double cum_pitch_l_;
 

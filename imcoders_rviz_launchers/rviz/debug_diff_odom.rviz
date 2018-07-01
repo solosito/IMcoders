@@ -5,14 +5,13 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /Status1
-        - /RobotModel1
-        - /RobotModel1/Status1
-        - /Odometry1
+        - /IMcoders Odometry1
+        - /IMcoders Odometry1/Shape1
+        - /Gazebo Odometry1
+        - /Gazebo Odometry1/Shape1
         - /Imu1/Box properties1
         - /Imu2/Box properties1
         - /Imu2/Axes properties1
-        - /TF1
         - /TF1/Frames1
         - /TF1/Tree1
       Splitter Ratio: 0.5
@@ -129,10 +128,10 @@ Visualization Manager:
           Color: 204; 51; 204
           Scale: 1
           Value: true
-        Value: true
+        Value: false
       Enabled: true
-      Keep: 1
-      Name: Odometry
+      Keep: 100
+      Name: IMcoders Odometry
       Position Tolerance: 0.100000001
       Shape:
         Alpha: 1
@@ -145,6 +144,40 @@ Visualization Manager:
         Shaft Radius: 0.0500000007
         Value: Arrow
       Topic: /imcoders/odom
+      Unreliable: false
+      Value: true
+    - Angle Tolerance: 0.100000001
+      Class: rviz/Odometry
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.300000012
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: false
+      Enabled: true
+      Keep: 100
+      Name: Gazebo Odometry
+      Position Tolerance: 0.100000001
+      Shape:
+        Alpha: 1
+        Axes Length: 1
+        Axes Radius: 0.100000001
+        Color: 255; 170; 0
+        Head Length: 0.300000012
+        Head Radius: 0.100000001
+        Shaft Length: 1
+        Shaft Radius: 0.0500000007
+        Value: Arrow
+      Topic: /gazebo_odom
       Unreliable: false
       Value: true
     - Acceleration properties:
@@ -216,8 +249,6 @@ Visualization Manager:
           Value: true
         imu_right_link:
           Value: false
-        odom:
-          Value: false
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -225,17 +256,18 @@ Visualization Manager:
       Show Names: false
       Tree:
         imcoders_odom:
-          base_link:
-            caster_back_link:
-              {}
-            caster_front_link:
-              {}
-            front_left_wheel:
-              imu_left_link:
+          base_footprint:
+            base_link:
+              caster_back_link:
                 {}
-            front_right_wheel:
-              imu_right_link:
+              caster_front_link:
                 {}
+              front_left_wheel:
+                imu_left_link:
+                  {}
+              front_right_wheel:
+                imu_right_link:
+                  {}
       Update Interval: 0
       Value: true
   Enabled: true
@@ -263,7 +295,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 13.3853493
+      Distance: 7.53373575
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -278,10 +310,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.685397625
+      Pitch: 0.505397618
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.920391917
+      Yaw: 1.61539161
     Saved: ~
 Window Geometry:
   Displays:
@@ -300,4 +332,4 @@ Window Geometry:
     collapsed: true
   Width: 939
   X: 981
-  Y: 21
+  Y: 24
