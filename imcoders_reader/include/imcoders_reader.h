@@ -1,12 +1,12 @@
-#ifndef IMCODER_R_H
-#define IMCODER_R_H
+#ifndef IMCODERS_R_H
+#define IMCODERS_R_H
 
 #include <ros/ros.h>
 #include <RTIMULib.h>
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/MagneticField.h>
 
-namespace imcoder_reader
+namespace imcoders_reader
 {
 class IMCoder
 {
@@ -41,5 +41,6 @@ private:
 	RTIMU_DATA imu_data_;
 
 };
-} // namespace imcoder_reader
-#endif
+} // namespace imcoders_reader
+
+#endif // IMCODERS_R_H

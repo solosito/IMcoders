@@ -251,7 +251,7 @@
   <wheel fb="front" lr="left" parent="base_link" translateX="0" translateY="-0.5" flipY="1"/>
 
   <!-- IMcoder left -->
-  <link name="imu_left_link">
+  <link name="imcoder_left_link">
     <visual>
       <origin xyz="0 0 0" rpy="${M_PI/2} 0 0" />
       <geometry>
@@ -260,14 +260,14 @@
       <material name="White" />
     </visual>
   </link>
-  <joint name="imu_left_joint" type="fixed">
+  <joint name="imcoder_left_joint" type="fixed">
     <origin xyz="0 -${wheel_height/2 + imcoder_height/2} 0" rpy="0 0 0" />
     <parent link="front_left_wheel"/>
-    <child link="imu_left_link" />
+    <child link="imcoder_left_link" />
   </joint>
-  <gazebo reference="imu_left_link">
+  <gazebo reference="imcoder_left_link">
     <gravity>true</gravity>
-    <sensor name="imu_left_sensor" type="imu">
+    <sensor name="imcoder_left_sensor" type="imu">
       <always_on>true</always_on>
       <update_rate>${sensor_update_rate}</update_rate>
       <visualize>true</visualize>
@@ -279,14 +279,14 @@
         <gaussianNoise>0.0</gaussianNoise>
         <xyzOffset>0 0 0</xyzOffset>
         <rpyOffset>0 0 0</rpyOffset>
-        <frameName>imu_left_link</frameName>
+        <frameName>imcoder_left_link</frameName>
       </plugin>
       <pose>0 0 0 0 0 0</pose>
     </sensor>
   </gazebo>
 
   <!-- IMcoder right -->
-  <link name="imu_right_link">
+  <link name="imcoder_right_link">
     <visual>
       <origin xyz="0 0 0" rpy="${M_PI/2} 0 0" />
       <geometry>
@@ -295,14 +295,14 @@
       <material name="White" />
     </visual>
   </link>
-  <joint name="imu_right_joint" type="fixed">
+  <joint name="imcoder_right_joint" type="fixed">
     <origin xyz="0 ${wheel_height/2 + imcoder_height/2} 0" rpy="0 0 0" />
     <parent link="front_right_wheel"/>
-    <child link="imu_right_link" />
+    <child link="imcoder_right_link" />
   </joint>
-  <gazebo reference="imu_right_link">
+  <gazebo reference="imcoder_right_link">
     <gravity>true</gravity>
-    <sensor name="imu_right_sensor" type="imu">
+    <sensor name="imcoder_right_sensor" type="imu">
       <always_on>true</always_on>
       <update_rate>${sensor_update_rate}</update_rate>
       <visualize>true</visualize>
@@ -314,7 +314,7 @@
         <gaussianNoise>0.0</gaussianNoise>
         <xyzOffset>0 0 0</xyzOffset>
         <rpyOffset>0 0 0</rpyOffset>
-        <frameName>imu_right_link</frameName>
+        <frameName>imcoder_right_link</frameName>
       </plugin>
       <pose>0 0 0 0 0 0</pose>
     </sensor>

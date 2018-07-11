@@ -1,7 +1,7 @@
-#include "imcoder_reader.h"
+#include "imcoders_reader.h"
 #include <ros/console.h>
 
-namespace imcoder_reader
+namespace imcoders_reader
 {
 IMCoder::IMCoder(ros::NodeHandle& nh, const ros::NodeHandle& private_nh)
     : nh_(nh)
@@ -164,4 +164,4 @@ void IMCoder::spin()
         update_rate_.sleep();
     }
 }
-} // namespace imcoder_reader
+} // namespace imcoders_reader

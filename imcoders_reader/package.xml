@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <package>
-  <name>imcoder_reader</name>
+  <name>imcoders_reader</name>
   <version>0.0.0</version>
-  <description>The imcoder_reader package</description>
+  <description>The imcoders_reader package</description>
 
   <maintainer email="alfonso.troya@gmail.com">Alfonso Troya</maintainer>
 
-  <license>GPLv3</license>
+  <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>sensor_msgs</build_depend>

@@ -3,7 +3,7 @@
 
     <arg name="parent_link"      value="imcoders_link"/>
     <arg name="imcoder01_enable" value="true"/>
-    <arg name="imcoder02_enable" value="true"/>
+    <arg name="imcoder02_enable" value="false"/>
     <arg name="imcoder03_enable" value="true"/>
     <arg name="imcoder07_enable" value="true"/>
 
@@ -11,7 +11,7 @@
     <!-- IMcoder01 -->
     <include file="$(find timed_roslaunch)/launch/timed_roslaunch.launch">
         <arg name="time" value="0"/>
-        <arg name="pkg" value="imcoder_reader"/>
+        <arg name="pkg" value="imcoders_reader"/>
         <arg name="file" value="imcoder01.launch"/>
         <arg name="value" value="imcoder01_enable:=$(arg imcoder01_enable) parent_link:=$(arg parent_link)"/>
     </include>
@@ -19,7 +19,7 @@
     <!-- IMcoder02 -->
     <include file="$(find timed_roslaunch)/launch/timed_roslaunch.launch">
         <arg name="time" value="5"/>
-        <arg name="pkg" value="imcoder_reader"/>
+        <arg name="pkg" value="imcoders_reader"/>
         <arg name="file" value="imcoder02.launch"/>
         <arg name="value" value="imcoder02_enable:=$(arg imcoder02_enable) parent_link:=$(arg parent_link)"/>
     </include>
@@ -27,7 +27,7 @@
     <!-- IMcoder03 -->
     <include file="$(find timed_roslaunch)/launch/timed_roslaunch.launch">
         <arg name="time" value="10"/>
-        <arg name="pkg" value="imcoder_reader"/>
+        <arg name="pkg" value="imcoders_reader"/>
         <arg name="file" value="imcoder03.launch"/>
         <arg name="value" value="imcoder03_enable:=$(arg imcoder03_enable) parent_link:=$(arg parent_link)"/>
     </include>
@@ -35,7 +35,7 @@
     <!-- IMcoder07 -->
     <include file="$(find timed_roslaunch)/launch/timed_roslaunch.launch">
         <arg name="time" value="15"/>
-        <arg name="pkg" value="imcoder_reader"/>
+        <arg name="pkg" value="imcoders_reader"/>
         <arg name="file" value="imcoder07.launch"/>
         <arg name="value" value="imcoder07_enable:=$(arg imcoder07_enable) parent_link:=$(arg parent_link)"/>
     </include>
