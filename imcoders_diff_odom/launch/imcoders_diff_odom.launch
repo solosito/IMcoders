@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+
+    <node pkg="imcoders_diff_odom" type="imcoders_diff_odom_node" name="imcoders_diff_odom" output="screen">
+        <param name="debug_mode"          	   value="false"/>
+        <param name="publish_tf"               value="false"/>
+        <param name="odom_topic_name"          value="imcoders/odom"/>
+        <param name="odom_frame"               value="imcoders_odom"/>
+        <param name="odom_child_frame_id"      value="base_footprint"/>
+        <param name="imcoder_left_topic_name"  value="imu_left"/>
+        <param name="imcoder_right_topic_name" value="imu_right"/>
+        <param name="wheel_radius"             value="0.04"/>
+        <param name="wheel_separation"         value="0.3"/>
+        <param name="dtheta_threshold"         value="0.0000001"/>
+    </node>
+
+</launch>
