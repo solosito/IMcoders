@@ -59,7 +59,7 @@ bool imcodersDiffOdom::getParams(const ros::NodeHandle& private_nh)
             {
                 ros::console::notifyLoggerLevelsChanged();
             }
-            ROS_DEBUG("ROS console set on DEBUG mode");            
+            ROS_DEBUG("ROS console set on DEBUG mode");
         }
     }
 
@@ -162,8 +162,10 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
         double dot_product_r = z_axis.dot(diff_ori_imu_r);
 
         // Get the signed pitch
-        double dpitch_l = acosf(dot_product_l) * direction_l;
-        double dpitch_r = acosf(dot_product_r) * direction_r;
+        //double dpitch_l = acosf(dot_product_l) * direction_l;
+        //double dpitch_r = acosf(dot_product_r) * direction_r;
+        double dpitch_l = acosf(1 - 2 * (pow(dq_l.x(), 2.0) + pow(dq_l.y(),2.0)));
+        double dpitch_r = acosf(1 - 2 * (pow(dq_r.x(), 2.0) + pow(dq_r.y(),2.0)));
 
         if(std::isnan(dpitch_l))
             dpitch_l = 0.0;
@@ -228,12 +230,6 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
             y = last_y_ + dy;
         }
 
-        if(std::isnan(theta))
-        {
-            ros::shutdown();
-
-        }
-
         // Transform yaw rotation in euler angles to quaternion
         geometry_msgs::Quaternion theta_q = tf::createQuaternionMsgFromYaw(theta);
 
@@ -250,7 +246,7 @@ void imcodersDiffOdom::imcodersCallback(const sensor_msgs::ImuConstPtr& imcoder_
             odom_tf.transform.translation.z = 0.0;
             odom_tf.transform.rotation      = theta_q;
 
-            odom_broadcaster_.sendTransform(odom_tf);            
+            odom_broadcaster_.sendTransform(odom_tf);
         }
 
         // Fill odometry msg and publish it
