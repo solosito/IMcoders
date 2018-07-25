@@ -1,17 +1,16 @@
 #include "imcoders_reader.h"
 #include "ros/ros.h"
 
-
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "imcoders_reader");
+  ros::init(argc, argv, "imcoders_reader");
 
-    ros::NodeHandle nh;
-    ros::NodeHandle nh_private("~");
+  ros::NodeHandle nh;
+  ros::NodeHandle nh_private("~");
 
-    imcoders_reader::IMCoder imcoderReader(nh, nh_private);
+  imcoders_reader::IMCoder imcoderReader(nh, nh_private);
 
-    imcoderReader.spin();
+  imcoderReader.spin();
 
-    return EXIT_SUCCESS;
+  return EXIT_SUCCESS;
 }
