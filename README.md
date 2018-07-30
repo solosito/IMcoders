@@ -69,7 +69,6 @@ ___
 ### Differential wheeled robot with IMcoders  
 1. Launch simulator  
 `roslaunch imcoders_gazebo diff_wheeled_gazebo_IMcoders.launch`  
-
 **NOTE:** you can disable the Gazebo GUI (which it is consuming many resources) by launching instead:  
 `roslaunch imcoders_gazebo diff_wheeled_gazebo_IMcoders.launch gui:=false`  
 
