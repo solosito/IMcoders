@@ -86,7 +86,7 @@ With odometry computation visualization
 
 
 ![](https://github.com/solosito/IMcoders/blob/devel/doc/images/diff_robot_gazebo.png)  
-
+![](https://github.com/solosito/IMcoders/blob/devel/doc/images/diff_odom.gif)
 ___
 
 ## Running with hardware
