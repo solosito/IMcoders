@@ -45,9 +45,9 @@ void IMCoder::init(ros::NodeHandle& nh)
 
   // Enable the sensors
   ROS_DEBUG("Enabling sensors");
-  imu_->setGyroEnable(true);
-  imu_->setAccelEnable(true);
-  imu_->setCompassEnable(true);
+  imu_->setGyroEnable(gyro_enable_);
+  imu_->setAccelEnable(accel_enable_);
+  imu_->setCompassEnable(compass_enable_);
 }
 
 bool IMCoder::getROSParams(const ros::NodeHandle& private_nh)
@@ -96,6 +96,27 @@ bool IMCoder::getROSParams(const ros::NodeHandle& private_nh)
     frame_id_ = "imu_link";
   }
   ROS_DEBUG("frame_id: %s", frame_id_.c_str());
+
+  if (!private_nh.getParam("gyro_enable", gyro_enable_))
+  {
+    ROS_WARN("No gyro_enable provided - default: true");
+    gyro_enable_ = true;
+  }
+  ROS_DEBUG("gyro_enable: %d", gyro_enable_);
+
+  if (!private_nh.getParam("accel_enable", accel_enable_))
+  {
+    ROS_WARN("No accel_enable provided - default: true");
+    accel_enable_ = true;
+  }
+  ROS_DEBUG("accel_enable: %d", accel_enable_);
+
+  if (!private_nh.getParam("compass_enable", compass_enable_))
+  {
+    ROS_WARN("No compass_enable provided - default: true");
+    compass_enable_ = true;
+  }
+  ROS_DEBUG("compass_enable: %d", compass_enable_);
 
   return true;
 }

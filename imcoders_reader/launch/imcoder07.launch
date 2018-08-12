@@ -9,6 +9,9 @@
         <param name="imcoder_name"          value="imcoder07"/>
         <param name="serial_port"           value="/dev/rfcomm7"/>
         <param name="frame_id"              value="imcoder07_link"/>
+        <param name="gyro_enable"           value="true"/>
+        <param name="accel_enable"          value="true"/>
+        <param name="compass_enable"        value="false"/>
     </node>
 
     <!-- IMcoder07 TF -->

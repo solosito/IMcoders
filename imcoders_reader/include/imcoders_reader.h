@@ -33,6 +33,9 @@ private:
   std::string frame_id_;
   ros::Publisher imu_pub_;
   ros::Publisher mag_pub_;
+  bool gyro_enable_;
+  bool accel_enable_;
+  bool compass_enable_;
 
   RTIMU* imu_;
   RTIMUSettings* settings_;
