@@ -7,8 +7,8 @@
         <param name="odom_topic_name"          value="imcoders/odom"/>
         <param name="odom_frame"               value="imcoders_odom"/>
         <param name="odom_child_frame_id"      value="base_footprint"/>
-        <param name="imcoder_left_topic_name"  value="imu_left"/>
-        <param name="imcoder_right_topic_name" value="imu_right"/>
+        <param name="imcoder_left_topic_name"  value="/imcoder02/imu"/>
+        <param name="imcoder_right_topic_name" value="/imcoder01/imu"/>
         <param name="wheel_radius"             value="0.04"/>
         <param name="wheel_separation"         value="0.3"/>
         <param name="dtheta_threshold"         value="0.0000001"/>

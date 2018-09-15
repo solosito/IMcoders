@@ -7,11 +7,13 @@
   <maintainer email="alfonso.troya@gmail.com">Alfonso Troya</maintainer>
   <author email="alfonso.troya@gmail.com">Alfonso Troya</author>
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>nav_msgs</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>tf</build_depend>
   <build_depend>message_filters</build_depend>
+  <exec_depend>rospy</exec_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>

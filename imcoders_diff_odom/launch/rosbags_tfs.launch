@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="imu_transformer"        default="false"/>
+
+    <!-- IMcoder01 TF -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="tf_imcoder01_link_to_imcoder01_wheel_link" args="0 0 0 0 0 1.5707 imcoder01_link imcoder01_wheel_link"/>
+    
+    <node pkg="imu_transformer" type="imu_transformer_node" name="imcoder01_data_transformer" output="screen" if="$(arg imu_transformer)">
+        <remap from="imu_in"                    to="imcoder01/imu"/>
+        <remap from="imcoder01/imu/data"        to="imcoder01/imu"/>
+        <remap from="imu_out"                   to="imcoder01_wheel"/>
+        <param name="target_frame"              value="imcoder01_wheel_link"/>
+    </node>
+
+    <!-- IMcoder03 TF -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="tf_imcoder03_link_to_imcoder03_wheel_link" args="0 0 0 0 0 -1.5707 imcoder03_link imcoder03_wheel_link"/>
+    
+    <node pkg="imu_transformer" type="imu_transformer_node" name="imcoder03_data_transformer" output="screen" if="$(arg imu_transformer)">
+        <remap from="imu_in"                    to="imcoder03/imu"/>
+        <remap from="imcoder03/imu/data"        to="imcoder03/imu"/>
+        <remap from="imu_out"                   to="imcoder03_wheel"/>
+        <param name="target_frame"              value="imcoder03_wheel_link"/>
+    </node>
+
+</launch>

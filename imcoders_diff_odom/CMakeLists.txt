@@ -23,8 +23,9 @@ endif()
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
-  nav_msgs
+  rospy
   roscpp
+  nav_msgs
   sensor_msgs
   message_filters
   tf
@@ -36,7 +37,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 	INCLUDE_DIRS include
 	LIBRARIES imcoders_diff_odom
-	CATKIN_DEPENDS nav_msgs roscpp sensor_msgs message_filters
+	CATKIN_DEPENDS rospy roscpp nav_msgs sensor_msgs message_filters tf
 )
 
 ###########
@@ -62,3 +63,9 @@ target_link_libraries(${PROJECT_NAME}_node
 	${PROJECT_NAME}
 	${catkin_LIBRARIES}
 )
+
+install(PROGRAMS
+    scripts/imu_transformer.py
+    scripts/csv_imcoders_publisher.py
+  DESTINATION
+    ${CATKIN_PACKAGE_BIN_DESTINATION})

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<launch>
+
+    <arg name="offset_yaw_pitch_roll_imcoder01"        default="0 0 1.5707"/>
+    <arg name="offset_yaw_pitch_roll_imcoder03"        default="0 0 -1.5707"/>
+    <arg name="rosbag_file"     default="/home/atroya/imcoders_datasets/2018-09-02-18-21-21-forward/2018-09-02-18-21-21-forward.bag"/>
+
+    <!-- IMcoder01 static TF -->
+    <node pkg="tf2_ros"
+          type="static_transform_publisher"
+          name="tf_imcoder01_link_to_imcoder01_wheel_link" 
+          args="0 0 0 $(arg offset_yaw_pitch_roll_imcoder01) imcoder01_link imcoder01_wheel_link"/>
+
+    <!-- IMcoder03 static TF -->
+    <node pkg="tf2_ros"
+          type="static_transform_publisher"
+          name="tf_imcoder03_link_to_imcoder03_wheel_link" 
+          args="0 0 0 $(arg offset_yaw_pitch_roll_imcoder03) imcoder03_link imcoder03_wheel_link"/>
+
+    <!-- IMcoder01 data transformation -->
+    <node pkg="imcoders_diff_odom" type="imu_transformer.py" name="imcoder01_transformer" output="screen">
+        <param name="i_topic"           value="imcoder01/imu"/>
+        <param name="o_topic"           value="imcoder01_transformed/imu"/>
+        <param name="origin_frame"      value="/imcoder01_wheel_link"/>
+        <param name="destination_frame" value="/imcoder01_link"/>
+    </node>
+
+    <!-- IMcoder03 data transformation -->
+    <node pkg="imcoders_diff_odom" type="imu_transformer.py" name="imcoder03_transformer" output="screen">
+        <param name="i_topic"           value="imcoder03/imu"/>
+        <param name="o_topic"           value="imcoder03_transformed/imu"/>
+        <param name="origin_frame"      value="/imcoder03_wheel_link"/>
+        <param name="destination_frame" value="/imcoder03_link"/>
+    </node>
+
+    <!-- Differential odometry -->
+    <node pkg="imcoders_diff_odom" type="imcoders_diff_odom_node" name="imcoders_diff_odom" output="screen">
+        <param name="debug_mode"               value="false"/>
+        <param name="publish_tf"               value="false"/>
+        <param name="odom_topic_name"          value="imcoders/odom"/>
+        <param name="odom_frame"               value="imcoders_link"/>
+        <param name="odom_child_frame_id"      value="imcoders_link"/>
+        <param name="imcoder_left_topic_name"  value="/imcoder03_transformed/imu"/>
+        <param name="imcoder_right_topic_name" value="/imcoder01_transformed/imu"/>
+        <param name="wheel_radius"             value="0.055"/>
+        <param name="wheel_separation"         value="0.165"/>
+        <param name="dtheta_threshold"         value="0.0000001"/>
+    </node>
+
+    <!-- ROSbag -->
+    <node pkg="rosbag" type="play" name="rosbag_player" args="$(arg rosbag_file)"/>
+
+</launch>
