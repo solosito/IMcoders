@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="imcoders_diff_odom" type="odom_to_path.py" name="odom_to_path_imcoders" output="screen">
+        <param name="i_odom_topic"           value="imcoders/odom"/>
+        <param name="o_path_topic"           value="imcoders/path"/>
+    </node>
+
+    <node pkg="imcoders_diff_odom" type="odom_to_path.py" name="odom_to_path_ekf" output="screen">
+        <param name="i_odom_topic"           value="odometry/filtered"/>
+        <param name="o_path_topic"           value="ekf/path"/>
+    </node>
+</launch>
