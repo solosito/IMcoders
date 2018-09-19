@@ -1,0 +1,48 @@
+frequency: 50
+# sensor_timeout: 0.1
+two_d_mode: true
+
+# map_frame: map
+odom_frame: imcoders_link
+base_link_frame: robot_base
+# world_frame: imcoders_link
+
+# transform_time_offset: 0.0
+
+
+odom0: /imcoders/odom
+odom0_config: [true, true, false,
+               false, false, true,
+               false, false, false,
+               false, false, false,
+               false, false, false]
+odom0_differential: false
+odom0_relative: false
+odom0_queue_size: 10
+
+# imu0: /imcoder01_transformed/imu
+# imu0_config: [false, false, false,
+#               false, true, false,
+#               false, false, false,
+#               false, true, false,
+#               false, false, false]
+# imu0_differential: false
+# imu0_relative: false
+# imu0_remove_gravitational_acceleration: true
+# imu0_queue_size: 10
+
+# imu1: /imcoder03_transformed/imu
+# imu1_config: [false, false, false,
+#               false, true, false,
+#               false, false, false,
+#               false, true, false,
+#               false, false, false]
+# imu1_differential: false
+# imu1_relative: false
+# imu1_remove_gravitational_acceleration: true
+# imu1_queue_size: 10
+
+print_diagnostics: true
+
+debug: false
+debug_out_file: debug_ekf_localization.txt

@@ -67,5 +67,6 @@ target_link_libraries(${PROJECT_NAME}_node
 install(PROGRAMS
     scripts/imu_transformer.py
     scripts/csv_imcoders_publisher.py
+    scripts/odom_to_path.py
   DESTINATION
     ${CATKIN_PACKAGE_BIN_DESTINATION})

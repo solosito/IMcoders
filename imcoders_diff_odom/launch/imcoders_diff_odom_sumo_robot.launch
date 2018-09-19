@@ -3,18 +3,29 @@
 
     <arg name="offset_yaw_pitch_roll_imcoder01"        default="0 0 1.5707"/>
     <arg name="offset_yaw_pitch_roll_imcoder03"        default="0 0 -1.5707"/>
-    <arg name="rosbag_file"     default="/home/atroya/imcoders_datasets/2018-09-02-18-21-21-forward/2018-09-02-18-21-21-forward.bag"/>
+    <arg name="launch_rosbag"                          default="true"/>
+
+    <arg name="rosbag_file"     default="/home/atroya/imcoders_datasets/2018-09-02-18-22-02-complex/2018-09-02-18-22-02-complex.bag"/>
+    <!-- <arg name="rosbag_file"     default="/home/atroya/imcoders_datasets/2018-09-02-18-21-21-forward/2018-09-02-18-21-21-forward.bag"/> -->
+    <!-- <arg name="rosbag_file"     default="/home/atroya/imcoders_datasets/2018-09-02-18-22-54-left-turn.bag"/> -->
+    <!-- <arg name="rosbag_file"     default="/home/atroya/imcoders_datasets/2018-09-02-18-23-30-right-turn.bag"/> -->
 
     <!-- IMcoder01 static TF -->
     <node pkg="tf2_ros"
           type="static_transform_publisher"
-          name="tf_imcoder01_link_to_imcoder01_wheel_link" 
+          name="tf_robot_base_to_imcoders_link"
+          args="0 -0.5 0 0 0 0 robot_base imcoders_link"/>
+
+    <!-- IMcoder01 static TF -->
+    <node pkg="tf2_ros"
+          type="static_transform_publisher"
+          name="tf_imcoder01_link_to_imcoder01_wheel_link"
           args="0 0 0 $(arg offset_yaw_pitch_roll_imcoder01) imcoder01_link imcoder01_wheel_link"/>
 
     <!-- IMcoder03 static TF -->
     <node pkg="tf2_ros"
           type="static_transform_publisher"
-          name="tf_imcoder03_link_to_imcoder03_wheel_link" 
+          name="tf_imcoder03_link_to_imcoder03_wheel_link"
           args="0 0 0 $(arg offset_yaw_pitch_roll_imcoder03) imcoder03_link imcoder03_wheel_link"/>
 
     <!-- IMcoder01 data transformation -->
@@ -47,7 +58,13 @@
         <param name="dtheta_threshold"         value="0.0000001"/>
     </node>
 
+    <!-- Robot localization -->
+    <include file="$(find imcoders_diff_odom)/launch/ekf_localization.launch"/>
+
+    <!-- Odom to Path Converter -->
+    <include file="$(find imcoders_diff_odom)/launch/odom_to_path.launch"/>
+
     <!-- ROSbag -->
-    <node pkg="rosbag" type="play" name="rosbag_player" args="$(arg rosbag_file)"/>
+    <node pkg="rosbag" type="play" name="rosbag_player" args="$(arg rosbag_file)" if="$(arg launch_rosbag)"/>
 
 </launch>
